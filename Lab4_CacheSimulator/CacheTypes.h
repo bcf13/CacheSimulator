@@ -42,47 +42,46 @@ enum class eInstructionID
     InsFetch    =2
 };
 
-typedef struct t_LRU_Evictor
-{
-    // store keys of cache
-    std::list<int> dq;
-    
-    // store references of key in cache
-    std::unordered_map<int, std::list<int>::iterator> ma;
-    size_t size; //maximum capacity of cache
-    
-    t_LRU_Evictor(int size) : size(size) {};
-    
-    bool found = false;
-    
-    bool refer(uint32_t tag)
-    {
-        // not present in cache
-        if (ma.find(tag) == ma.end())
-        {
-            // cache is full
-            if (dq.size() == size)
-            {
-                //delete least recently used element
-                int last = dq.back();
-                dq.pop_back();
-                ma.erase(last);
-            }
-        }
-        // present in cache
-        else
-        {
-            dq.erase(ma[tag]);
-            found = true;
-        }
-        
-        // update reference
-        dq.push_front(tag);
-        ma[tag] = dq.begin();
-        
-        return found;
-    }
-} LRU_Evictor;
+//typedef struct t_LRU_Evictor
+//{
+//    // store keys of cache
+//    std::list<int> dq;
+//    
+//    // store references of key in cache
+//    std::unordered_map<int, std::list<int>::iterator> ma;
+//    size_t size; //maximum capacity of cache
+//    
+//    t_LRU_Evictor(int size) : size(size) {};
+//
+//    bool refer(uint32_t tag)
+//    {
+//        bool found = false;
+//        // not present in cache
+//        if (ma.find(tag) == ma.end())
+//        {
+//            // cache is full
+//            if (dq.size() == size)
+//            {
+//                //delete least recently used element
+//                int last = dq.back();
+//                dq.pop_back();
+//                ma.erase(last);
+//            }
+//        }
+//        // present in cache
+//        else
+//        {
+//            dq.erase(ma[tag]);
+//            found = true;
+//        }
+//        
+//        // update reference
+//        dq.push_front(tag);
+//        ma[tag] = dq.begin();
+//        
+//        return found;
+//    }
+//} LRU_Evictor;
 
 typedef struct t_PartitionedAddress
 {

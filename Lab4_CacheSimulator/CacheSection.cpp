@@ -97,10 +97,20 @@ CacheSectionLRU::CacheSectionLRU(const Section& section)
 : CacheSection(section)
 {
     for (int i = 0; i < mNumSets; i++) {
-        mvSetEvictors_LRU.emplace_back(mSection.iAssociativity);
+        mvpSetEvictors.push_back(new LRU_Evictor(mSection.iAssociativity));
     }
     
     cout<<"CacheSectionLRU ctor"<<endl;
+}
+
+CacheSectionRND::CacheSectionRND(const Section& section)
+: CacheSection(section)
+{
+    cout<<"CacheSectionRND ctor"<<endl;
+    for (int i = 0; i < mNumSets; i++) {
+        mvpSetEvictors.push_back(new RND_Evictor(mSection.iAssociativity));
+    }
+
 }
 
 bool CacheSection::Replace(bool hit, PartitionedAddress partionedAddress)
@@ -111,23 +121,29 @@ bool CacheSection::Replace(bool hit, PartitionedAddress partionedAddress)
 
 bool CacheSectionLRU::Replace(bool hit, PartitionedAddress partionedAddress)
 {
-        cout<<"CacheSectionLRU Replace"<<endl;
+    //cout<<"CacheSectionLRU Replace"<<endl;
     
     auto set = partionedAddress.iSet;
     auto wayRange=Set2WayRange(set);
     
-    LRU_Evictor* pEvictor = &mvSetEvictors_LRU[set];
+    auto pEvictor = mvpSetEvictors[set];
     
     auto tag = partionedAddress.iTag;
     
-    return pEvictor->refer(tag);
-    
+    return pEvictor->Access(tag);
 }
 
 bool CacheSectionRND::Replace(bool hit, PartitionedAddress partionedAddress)
 {
-        cout<<"CacheSectionRND Replace"<<endl;
-        return true;
+    //cout<<"CacheSectionRND Replace"<<endl;
+    auto set = partionedAddress.iSet;
+    auto wayRange=Set2WayRange(set);
+    
+    auto pEvictor = mvpSetEvictors[set];
+    
+    auto tag = partionedAddress.iTag;
+    
+    return pEvictor->Access(tag);
 }
 
 bool CacheSectionNMRU::Replace(bool hit, PartitionedAddress partionedAddress)

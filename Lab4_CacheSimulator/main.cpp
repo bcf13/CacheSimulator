@@ -11,6 +11,8 @@
 #include "CacheManager.hpp"
 #include "CacheSection.hpp"
 
+#define INTERVAL 100000
+
 
 int main(int argc, const char * argv[]) {
     // insert code here...
@@ -22,9 +24,16 @@ int main(int argc, const char * argv[]) {
     
     CacheManager cacheManager(cacheConfig,dineroMatrix);
     
+    int instructionIndex = 0;
     while (cacheManager.ProcessInstruction())
     {
+        if ((instructionIndex+1) % INTERVAL ==0)
+        {
+            std::cout<<instructionIndex<<std::endl;
+            cacheManager.PrintStats();
+        }
         
+        instructionIndex++;
     }
     
     cacheManager.PrintStats(); 

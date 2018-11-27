@@ -12,8 +12,8 @@
 #include <sstream>
 
 #define DEFAULT_PARSE_INT -1
-#define DEBUG 0
-#define TEST_ID 1
+#define DEBUG 1
+#define TEST_ID 2
 
 using namespace std;
 
@@ -37,7 +37,8 @@ void ParseArgs(CacheConfig& cacheConfig, DineroMatrix& dineroMatrix)
 
 void ParseTraceFile(DineroMatrix& dm)
 {
-    string defaultFile = "Dinero10k.din";
+    //string defaultFile = "Dinero10k.din";
+    string defaultFile = "DineroFull.din";
     
     cout<< endl << "Next, please enter a trace file, or 'd' for default: " << defaultFile <<  endl << endl;
     
@@ -59,8 +60,8 @@ void ParseTraceFile(DineroMatrix& dm)
             
             while (infile >> code >> sAddress)
             {
-                cout<<code<<endl;
-                cout<<sAddress<<endl;
+                //cout<<code<<endl;
+                //cout<<sAddress<<endl;
                 
                 uint32_t iAddress;
                 std::stringstream ss;
@@ -283,9 +284,9 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
                 }}
             };
             cacheConfig.vLevels.push_back(l);
-            cacheConfig.iDRAM_hitTime = -1;
-            cacheConfig.bAllocateOnWriteMiss = true;
-            cacheConfig.replacementAlgorithm = eReplacementAlgorithm::LRU;
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = true;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
             return;
         }
         case 1:
@@ -299,9 +300,27 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
                 }}
             };
             cacheConfig.vLevels.push_back(l);
-            cacheConfig.iDRAM_hitTime = -1;
-            cacheConfig.bAllocateOnWriteMiss = true;
-            cacheConfig.replacementAlgorithm = eReplacementAlgorithm::LRU;
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = true;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
+            return;
+            
+            return;
+        }
+        case 2:
+        {
+            Level l = {
+                eMode::Unified,
+                {{       8,
+                    16,
+                    4096,
+                    -1
+                }}
+            };
+            cacheConfig.vLevels.push_back(l);
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = true;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::RND;
             return;
             
             return;

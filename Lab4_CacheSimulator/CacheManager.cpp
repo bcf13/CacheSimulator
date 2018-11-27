@@ -102,7 +102,7 @@ bool CacheManager::ProcessInstruction()
     
     auto instructionID  =std::get<0>(instruction);
     auto address        =std::get<1>(instruction);
-    cout<<instructionID<<","<<address<<endl;
+    //cout<<instructionID<<","<<address<<endl;
     
     // Delegate to appropriate cache section
 
@@ -154,7 +154,6 @@ void CacheManager::PrintStats()
     {
         for (auto section : level)
         {
-            
             cout<<section.ID<<" Statistics: "<<endl;
             cout<<endl;
             

@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include "CacheTypes.h"
+#include "Evictor.hpp"
 
 class CacheSection
 {
@@ -34,7 +35,7 @@ protected:
     
     std::vector<CacheWay>       mData;
     
-    std::vector<LRU_Evictor>    mvSetEvictors_LRU; 
+    std::vector<Evictor*>       mvpSetEvictors;
     
     
 public:
@@ -59,15 +60,13 @@ class CacheSectionLRU : public CacheSection
 {
 public:
     CacheSectionLRU(const Section& section);
-    //CacheSection();
-    //using CacheSection::CacheSection;
-    
     bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
 
 class CacheSectionRND: public CacheSection
 {
-    using CacheSection::CacheSection;
+public:
+    CacheSectionRND(const Section& section);
     bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
 

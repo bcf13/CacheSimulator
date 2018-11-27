@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		771BBAAA21AB565F00D1B9DB /* CacheManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 771BBAA821AB565F00D1B9DB /* CacheManager.cpp */; };
 		771BBAB021AB7DBE00D1B9DB /* CacheSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 771BBAAE21AB7DBE00D1B9DB /* CacheSection.cpp */; };
+		7794119B21ADC81500669488 /* Evictor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7794119921ADC81500669488 /* Evictor.cpp */; };
 		7798B36321A3ED2600ABA9D7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7798B36221A3ED2600ABA9D7 /* main.cpp */; };
 		7798B36B21A3ED6800ABA9D7 /* ParseArgs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7798B36921A3ED6800ABA9D7 /* ParseArgs.cpp */; };
 /* End PBXBuildFile section */
@@ -30,6 +31,8 @@
 		771BBAA921AB565F00D1B9DB /* CacheManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CacheManager.hpp; sourceTree = "<group>"; };
 		771BBAAE21AB7DBE00D1B9DB /* CacheSection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CacheSection.cpp; sourceTree = "<group>"; };
 		771BBAAF21AB7DBE00D1B9DB /* CacheSection.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CacheSection.hpp; sourceTree = "<group>"; };
+		7794119921ADC81500669488 /* Evictor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Evictor.cpp; sourceTree = "<group>"; };
+		7794119A21ADC81500669488 /* Evictor.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Evictor.hpp; sourceTree = "<group>"; };
 		7798B35F21A3ED2600ABA9D7 /* Lab4_CacheSimulator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Lab4_CacheSimulator; sourceTree = BUILT_PRODUCTS_DIR; };
 		7798B36221A3ED2600ABA9D7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7798B36921A3ED6800ABA9D7 /* ParseArgs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParseArgs.cpp; sourceTree = "<group>"; };
@@ -75,6 +78,8 @@
 				771BBAA921AB565F00D1B9DB /* CacheManager.hpp */,
 				771BBAAE21AB7DBE00D1B9DB /* CacheSection.cpp */,
 				771BBAAF21AB7DBE00D1B9DB /* CacheSection.hpp */,
+				7794119921ADC81500669488 /* Evictor.cpp */,
+				7794119A21ADC81500669488 /* Evictor.hpp */,
 			);
 			path = Lab4_CacheSimulator;
 			sourceTree = "<group>";
@@ -138,6 +143,7 @@
 				7798B36B21A3ED6800ABA9D7 /* ParseArgs.cpp in Sources */,
 				7798B36321A3ED2600ABA9D7 /* main.cpp in Sources */,
 				771BBAB021AB7DBE00D1B9DB /* CacheSection.cpp in Sources */,
+				7794119B21ADC81500669488 /* Evictor.cpp in Sources */,
 				771BBAAA21AB565F00D1B9DB /* CacheManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
