@@ -34,7 +34,8 @@ CacheSection::CacheSection()
 }
 
 CacheSection::CacheSection(const Section& section)
-    : mSection(section)
+    :   mSection(section),
+        mHitTime(section.iHitTime)
 {
     // fully associative cache = (C/B)-way cache with 1 set
     
@@ -66,11 +67,16 @@ PartitionedAddress CacheSection::PartitionAddress(const int& address)
 }
 
 // Returns hit
-bool CacheSection::ProcessSet(PartitionedAddress partionedAddress)
+bool CacheSection::ProcessSet(PartitionedAddress partionedAddress, bool alloc)
 {
     auto wayRange=Set2WayRange(partionedAddress.iSet);
     
     auto tag=partionedAddress.iTag;
+    
+    
+    return Replace(alloc,partionedAddress);
+    
+    bool found = false; 
     
     for (int i = wayRange.start ; i <= wayRange.stop; i++)
     {
@@ -87,28 +93,52 @@ bool CacheSection::ProcessSet(PartitionedAddress partionedAddress)
     return false;
 }
 
-void CacheSection::Replace()
+CacheSectionLRU::CacheSectionLRU(const Section& section)
+: CacheSection(section)
+{
+    for (int i = 0; i < mNumSets; i++) {
+        mvSetEvictors_LRU.emplace_back(mSection.iAssociativity);
+    }
+    
+    cout<<"CacheSectionLRU ctor"<<endl;
+}
+
+bool CacheSection::Replace(bool hit, PartitionedAddress partionedAddress)
 {
     cout<<"CacheSection Replace"<<endl;
+    return true;
 }
 
-void CacheSectionLRU::Replace()
+bool CacheSectionLRU::Replace(bool hit, PartitionedAddress partionedAddress)
 {
         cout<<"CacheSectionLRU Replace"<<endl;
+    
+    auto set = partionedAddress.iSet;
+    auto wayRange=Set2WayRange(set);
+    
+    LRU_Evictor* pEvictor = &mvSetEvictors_LRU[set];
+    
+    auto tag = partionedAddress.iTag;
+    
+    return pEvictor->refer(tag);
+    
 }
 
-void CacheSectionRND::Replace()
+bool CacheSectionRND::Replace(bool hit, PartitionedAddress partionedAddress)
 {
         cout<<"CacheSectionRND Replace"<<endl;
+        return true;
 }
 
-void CacheSectionNMRU::Replace()
+bool CacheSectionNMRU::Replace(bool hit, PartitionedAddress partionedAddress)
 {
         cout<<"CacheSectionNMRU Replace"<<endl;
+        return true;
 }
 
-void CacheSectionFIFO::Replace()
+bool CacheSectionFIFO::Replace(bool hit, PartitionedAddress partionedAddress)
 {
         cout<<"CacheSectionFIFO Replace"<<endl;
+        return true;
 }
 

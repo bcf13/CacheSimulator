@@ -20,8 +20,6 @@ int main(int argc, const char * argv[]) {
 
     ParseArgs(cacheConfig,dineroMatrix);
     
-    cacheConfig.replacementAlgorithm=eReplacementAlgorithm::NMRU;
-    
     CacheManager cacheManager(cacheConfig,dineroMatrix);
     
     while (cacheManager.ProcessInstruction())

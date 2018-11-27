@@ -1,0 +1,5 @@
+int A = 1;
+int B = 32;
+int C = 8192;
+int hit = -1;
+Section s_0 = {A,B,C,hit};

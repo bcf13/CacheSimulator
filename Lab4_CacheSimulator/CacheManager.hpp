@@ -17,10 +17,18 @@
 class CacheManager
 {
 private:
-    int mDineroInstructionIndex;
+    int             mDineroInstructionIndex;
     DineroMatrix    mDineroMatrix;
-    CacheSection*   mpCacheSections;
-    CacheStats      mCacheStats; 
+    //CacheStats      mCacheStats;
+    int             mDRAM_hitTime;
+    bool            mbAllocateOnWriteMiss;
+    size_t          mNumLevels;
+    size_t          mNumLevel1_Sections;
+    size_t          mNumLevel2_Sections;
+    
+    eReplacementAlgorithm                       mReplacementAlgorithm;
+    std::vector<std::vector<CacheSection*>>     mvpCacheSections;
+    std::vector<std::vector<CacheStats>>        mvpCacheStats;
     
 public:
     CacheManager(const CacheConfig& cacheConfig, const DineroMatrix& dineroMatrix);

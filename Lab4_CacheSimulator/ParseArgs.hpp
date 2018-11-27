@@ -26,6 +26,8 @@ void        ParseAndPopulateLevel(Level& level);
 void        ParseAndPopulateSection(Section& section);
 bool        ParseAllocateOnWriteMiss();
 
+void        GetTestConfig(CacheConfig& cacheConfig, int testID);
+
 
 #endif /* ParseArgs_hpp */
 

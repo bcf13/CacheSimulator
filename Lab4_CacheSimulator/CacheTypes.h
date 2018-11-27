@@ -10,13 +10,15 @@
 #define CacheTypes_h
 
 #include <vector>
+#include <list>
+#include <unordered_map>
 #include <iostream>
 
 enum class eConfig
 {
     D,          // Direct-Mapped
     S,          // Set-Associative (S)
-    F           //Fully-Associative
+    F           // Fully-Associative
 };
 
 enum class eMode
@@ -35,16 +37,58 @@ enum class eReplacementAlgorithm
 
 enum class eInstructionID
 {
-    Read=0,
-    Write=1,
-    InsFetch=2
+    Read        =0,
+    Write       =1,
+    InsFetch    =2
 };
+
+typedef struct t_LRU_Evictor
+{
+    // store keys of cache
+    std::list<int> dq;
+    
+    // store references of key in cache
+    std::unordered_map<int, std::list<int>::iterator> ma;
+    size_t size; //maximum capacity of cache
+    
+    t_LRU_Evictor(int size) : size(size) {};
+    
+    bool found = false;
+    
+    bool refer(uint32_t tag)
+    {
+        // not present in cache
+        if (ma.find(tag) == ma.end())
+        {
+            // cache is full
+            if (dq.size() == size)
+            {
+                //delete least recently used element
+                int last = dq.back();
+                dq.pop_back();
+                ma.erase(last);
+            }
+        }
+        // present in cache
+        else
+        {
+            dq.erase(ma[tag]);
+            found = true;
+        }
+        
+        // update reference
+        dq.push_front(tag);
+        ma[tag] = dq.begin();
+        
+        return found;
+    }
+} LRU_Evictor;
 
 typedef struct t_PartitionedAddress
 {
-    uint32_t iTag;
-    uint32_t iSet;
-    uint32_t iOffset;
+    uint32_t    iTag;
+    uint32_t    iSet;
+    uint32_t    iOffset;
 } PartitionedAddress;
 
 typedef struct t_DineroMatrix
@@ -52,35 +96,48 @@ typedef struct t_DineroMatrix
     std::vector<std::pair<uint32_t,uint32_t>> data;
 } DineroMatrix;
 
-typedef struct t_Section
-{
-    int iAssociativity;
-    int iBlockSize;
-    int iCapacity;
-    
-    int iHitTime;
-} Section;
-
+// inclusive-range of ways corresponding to set
 typedef struct t_WayRange
 {
-    int start;
-    int stop;
+    int         start;
+    int         stop;
 } WayRange;
 
 typedef struct t_CacheWay
 {
-    bool bValid;
-    uint32_t iTag;
+    bool        bValid;
+    uint32_t    iTag;
     t_CacheWay():
         bValid(false),iTag(0){};
 } CacheWay;
+
+typedef struct t_Section
+{
+    int         iAssociativity;
+    int         iBlockSize;
+    int         iCapacity;
+    
+    int         iHitTime;
+    
+    ~t_Section()
+    {
+        //std::cout<<"section dtor"<<std::endl;
+    }
+} Section;
 
 typedef struct t_Level
 {
     eMode Mode;
     
     std::vector<Section> vSections;       // 1 or 2 sections
+    
+    ~t_Level()
+    {
+        //std::cout<<"level dtor"<<std::endl;
+    }
 } Level;
+
+
 
 typedef struct t_CacheConfig
 {
@@ -95,20 +152,26 @@ typedef struct t_CacheConfig
 
 typedef struct t_CacheStats
 {
-    int readHits;
+    int readMisses;
     int readTotal;
     
-    int writeHits;
+    int writeMisses;
     int writeTotal;
     
-    int instrFetchHits;
+    int instrFetchMisses;
     int instrFetchTotal;
     
-    t_CacheStats():
-        readHits(0),        readTotal(0),
-        writeHits(0),       writeTotal(0),
-        instrFetchHits(0),  instrFetchTotal(0)
+    std::string ID;
+    
+    t_CacheStats(std::string ID):
+        readMisses(0),        readTotal(0),
+        writeMisses(0),       writeTotal(0),
+        instrFetchMisses(0),  instrFetchTotal(0),
+        ID(ID)
     {};
+    
+    t_CacheStats(){};
+    
 } CacheStats;
 
 // cache

@@ -15,7 +15,7 @@
 
 class CacheSection
 {
-private:
+protected:
     
     Section     mSection;
     
@@ -30,7 +30,11 @@ private:
     uint32_t    mNumSets;
     uint32_t    mNumWays;
     
-    std::vector<CacheWay> mData;
+    uint32_t    mHitTime; 
+    
+    std::vector<CacheWay>       mData;
+    
+    std::vector<LRU_Evictor>    mvSetEvictors_LRU; 
     
     
 public:
@@ -39,9 +43,9 @@ public:
     PartitionedAddress PartitionAddress(const int& address);
     WayRange Set2WayRange(int set);
     
-    bool ProcessSet(PartitionedAddress partionedAddress);
+    bool ProcessSet(PartitionedAddress partionedAddress, bool alloc);
     
-    virtual void Replace();
+    virtual bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
 
 //LRU,        // Least-uecently used
@@ -53,26 +57,30 @@ public:
 
 class CacheSectionLRU : public CacheSection
 {
-    using CacheSection::CacheSection;
-    void Replace();
+public:
+    CacheSectionLRU(const Section& section);
+    //CacheSection();
+    //using CacheSection::CacheSection;
+    
+    bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
 
 class CacheSectionRND: public CacheSection
 {
     using CacheSection::CacheSection;
-    void Replace();
+    bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
 
 class CacheSectionNMRU: public CacheSection
 {
     using CacheSection::CacheSection;
-    void Replace();
+    bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
 
 class CacheSectionFIFO: public CacheSection
 {
-     using CacheSection::CacheSection; 
-    void Replace();
+    using CacheSection::CacheSection; 
+    bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
 
 
