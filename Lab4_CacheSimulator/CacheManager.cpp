@@ -6,7 +6,6 @@
 //  Copyright © 2018 Benjamin C Flowers. All rights reserved.
 //
 
-#define DEBUG 1
 
 
 #include "CacheManager.hpp"

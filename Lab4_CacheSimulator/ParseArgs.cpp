@@ -12,7 +12,7 @@
 #include <sstream>
 
 #define DEFAULT_PARSE_INT -1
-#define DEBUG 1
+#define DEBUG 0
 #define TEST_ID 1
 
 using namespace std;
