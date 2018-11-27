@@ -19,7 +19,6 @@ class CacheManager
 private:
     int             mDineroInstructionIndex;
     DineroMatrix    mDineroMatrix;
-    //CacheStats      mCacheStats;
     int             mDRAM_hitTime;
     bool            mbAllocateOnWriteMiss;
     size_t          mNumLevels;

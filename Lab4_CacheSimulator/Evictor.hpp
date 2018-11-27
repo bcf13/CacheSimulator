@@ -15,12 +15,10 @@
 #include <unordered_map>
 #include <set>
 
-
 class Evictor
 {
 protected:
     size_t size;
-    
 public:
     Evictor(size_t size);
     virtual bool Access(uint32_t tag) = 0;
@@ -44,12 +42,10 @@ public:
 class RND_Evictor : public Evictor
 {
 private:
-
-    std::set<uint32_t> tagSet; 
+    std::set<uint32_t> tagSet;
     
 public:
     RND_Evictor(size_t size);
-    
     bool Access(const uint32_t tag);
 };
 

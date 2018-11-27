@@ -21,11 +21,7 @@ void ParseArgs(CacheConfig& cacheConfig, DineroMatrix& dineroMatrix)
 {
     cout<<"Welcome to ECE 550 Group 3's Cache Simulator!" << endl;
     
-    // 1)   get # levels: int_parse, {1,2}
-    //      for each level,
-    // 2)     get mode: string_parse {"u","U","s","S"}
-    
-    if (DEBUG)
+    if (DEBUG) // use pre-made test configuration
         GetTestConfig(cacheConfig, TEST_ID);
     else
         ParseAndPopulateCache(cacheConfig);
@@ -52,7 +48,6 @@ void ParseTraceFile(DineroMatrix& dm)
 
         std::ifstream infile(fileName);
         
-        
         if (infile.is_open())
         {
             int code;
@@ -75,7 +70,6 @@ void ParseTraceFile(DineroMatrix& dm)
         }
         else cout << "\t" << "try again..."<<endl;
     }
-    
 }
 
 int ParseInt(std::string prompt, int lBound, int uBound)
@@ -123,12 +117,10 @@ void ParseAndPopulateCache(CacheConfig& cacheConfig)
     int lBound=1;
     int uBound=INT_MAX;
     
-    std::string prompt = "Please enter the DRAM hit time";
-    cacheConfig.iDRAM_hitTime = ParseInt(prompt,lBound,uBound);
-    
-    cacheConfig.bAllocateOnWriteMiss=ParseAllocateOnWriteMiss();
-    
-    cacheConfig.replacementAlgorithm = ParseReplacementAlgorithm();
+    std::string prompt                  = "Please enter the DRAM hit time";
+    cacheConfig.iDRAM_hitTime           = ParseInt(prompt,lBound,uBound);
+    cacheConfig.bAllocateOnWriteMiss    = ParseAllocateOnWriteMiss();
+    cacheConfig.replacementAlgorithm    = ParseReplacementAlgorithm();
     
     cout<<"here"<<endl; 
     
@@ -137,9 +129,8 @@ void ParseAndPopulateCache(CacheConfig& cacheConfig)
 void ParseAndPopulateLevel(Level& level)
 {
     cout<<"Please select Unified (U) or Split Mode (S)" << endl;
-    level.Mode = ParseMode();
-    
-    int numSections = level.Mode==eMode::Unified ? 1 : 2;
+    level.Mode          = ParseMode();
+    int numSections     = level.Mode==eMode::Unified ? 1 : 2;
     
     for (int i = 0; i < numSections; i++)
     {
@@ -148,13 +139,6 @@ void ParseAndPopulateLevel(Level& level)
         ParseAndPopulateSection(section);
         level.vSections.push_back(section);
     }
-    
-//    // Get Hit Time
-//    int lBound=1;
-//    int uBound=INT_MAX;
-//    
-//    std::string prompt = "Please enter this cache level's hit time";
-//    level.iHitTime = ParseInt(prompt,lBound,uBound);
 }
 
 void ParseAndPopulateSection(Section& section)
@@ -162,32 +146,32 @@ void ParseAndPopulateSection(Section& section)
     int lBound, uBound;
     
     // Get Associativity
-    lBound=1;
-    uBound=8;
+    lBound                  = 1;
+    uBound                  = 8;
     
-    std::string aPrompt = "Please enter the Associativity";
-    section.iAssociativity = ParseInt(aPrompt,lBound,uBound);
+    std::string aPrompt     = "Please enter the Associativity";
+    section.iAssociativity  = ParseInt(aPrompt,lBound,uBound);
     
     // Get BlockSize
-    lBound=1;
-    uBound=INT_MAX;
+    lBound                  = 1;
+    uBound                  = INT_MAX;
     
     std::string bPrompt = "Please enter the Block Size";
     section.iBlockSize = ParseInt(bPrompt,lBound,uBound);
     
     // Get Capacity
-    lBound=1;
-    uBound=INT_MAX;
+    lBound                  = 1;
+    uBound                  = INT_MAX;
     
-    std::string cPrompt = "Please enter the Capacity";
-    section.iCapacity = ParseInt(cPrompt,lBound,uBound);
+    std::string cPrompt     = "Please enter the Capacity";
+    section.iCapacity       = ParseInt(cPrompt,lBound,uBound);
     
     // Get Hit Time
-    lBound=1;
-    uBound=INT_MAX;
+    lBound                  = 1;
+    uBound                  = INT_MAX;
     
-    std::string hitPrompt = "Please enter the cache-section hit time";
-    section.iHitTime = ParseInt(hitPrompt,lBound,uBound);
+    std::string hitPrompt   = "Please enter the cache-section hit time";
+    section.iHitTime        = ParseInt(hitPrompt,lBound,uBound);
 }
 
 eMode ParseMode()
@@ -269,7 +253,7 @@ eReplacementAlgorithm ParseReplacementAlgorithm()
     return eReplacementAlgorithm::LRU;
 }
 
-
+// Get pre-made test configuration
 void GetTestConfig(CacheConfig& cacheConfig, int testID)
 {
     switch (testID) {
@@ -304,8 +288,6 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
             cacheConfig.bAllocateOnWriteMiss    = true;
             cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
             return;
-            
-            return;
         }
         case 2:
         {
@@ -322,30 +304,6 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
             cacheConfig.bAllocateOnWriteMiss    = true;
             cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::RND;
             return;
-            
-            return;
         }
     }
 }
-
-//typedef struct t_Level
-//{
-//    eMode Mode;
-//    std::vector<Section> vSections;       // 1 or 2 sections
-//} Level;
-//
-//typedef struct t_Section
-//{
-//    int iAssociativity;
-//    int iBlockSize;
-//    int iCapacity;
-//    int iHitTime;
-//} Section;
-//
-//typedef struct t_CacheConfig
-//{
-//    std::vector<Level> vLevels;         // 1 or 2 levels
-//    int iDRAM_hitTime;
-//    bool bAllocateOnWriteMiss;
-//    eReplacementAlgorithm replacementAlgorithm;
-//} CacheConfig;

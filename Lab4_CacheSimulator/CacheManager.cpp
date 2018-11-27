@@ -6,8 +6,6 @@
 //  Copyright © 2018 Benjamin C Flowers. All rights reserved.
 //
 
-
-
 #include "CacheManager.hpp"
 using namespace std; 
 
@@ -74,18 +72,6 @@ CacheManager::CacheManager(const CacheConfig& cacheConfig, const DineroMatrix& d
         }
         levelIndex++;
     }
-    
-    
-//    int A = 2;
-//    int B = 16;
-//    int C = 32768;
-    int A = 1;
-    int B = 32;
-    int C = 8192;
-    int hit = -1;
-    Section s = {A,B,C,hit};
-    
-
 }
 
 CacheManager::~CacheManager()

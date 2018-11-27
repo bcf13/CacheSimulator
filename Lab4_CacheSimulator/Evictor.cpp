@@ -8,21 +8,17 @@
 
 #include "Evictor.hpp"
 
-
 Evictor::Evictor(size_t size)
 : size(size)
 {}
 
 LRU_Evictor::LRU_Evictor(size_t size)
 :   Evictor(size)
-{
-}
-
+{}
 
 RND_Evictor::RND_Evictor(size_t size)
 :   Evictor(size)
-{
-}
+{}
 
 bool LRU_Evictor::Access(const uint32_t tag)
 {

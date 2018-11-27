@@ -16,8 +16,6 @@
 #include <utility>
 
 eMode       ParseMode();
-eReplacementAlgorithm ParseReplacementAlgorithm();
-
 void        ParseArgs(CacheConfig& cacheConfig, DineroMatrix& dineroMatrix); 
 void        ParseTraceFile(DineroMatrix& dm);
 int         ParseInt(std::string prompt, int lBound, int uBound);
@@ -25,8 +23,8 @@ void        ParseAndPopulateCache(CacheConfig& cacheConfig);
 void        ParseAndPopulateLevel(Level& level);
 void        ParseAndPopulateSection(Section& section);
 bool        ParseAllocateOnWriteMiss();
-
 void        GetTestConfig(CacheConfig& cacheConfig, int testID);
+eReplacementAlgorithm ParseReplacementAlgorithm();
 
 
 #endif /* ParseArgs_hpp */

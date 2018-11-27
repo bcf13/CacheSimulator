@@ -17,26 +17,23 @@
 class CacheSection
 {
 protected:
+    Section                 mSection;
     
-    Section     mSection;
+    uint32_t                mOffset_numbits;
+    uint32_t                mSet_numbits;
+    uint32_t                mTag_numbits;
     
-    uint32_t    mOffset_numbits;
-    uint32_t    mSet_numbits;
-    uint32_t    mTag_numbits;
+    uint32_t                mOffset_mask;
+    uint32_t                mSet_mask;
+    uint32_t                mTag_mask;
     
-    uint32_t    mOffset_mask;
-    uint32_t    mSet_mask;
-    uint32_t    mTag_mask;
+    uint32_t                mNumSets;
+    uint32_t                mNumWays;
     
-    uint32_t    mNumSets;
-    uint32_t    mNumWays;
+    uint32_t                mHitTime;
     
-    uint32_t    mHitTime; 
-    
-    std::vector<CacheWay>       mData;
-    
-    std::vector<Evictor*>       mvpSetEvictors;
-    
+    std::vector<CacheWay>   mData;
+    std::vector<Evictor*>   mvpSetEvictors;
     
 public:
     CacheSection();
@@ -48,13 +45,6 @@ public:
     
     virtual bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
-
-//LRU,        // Least-uecently used
-//RND,        // TBD
-//NMRU,       // TBD
-//FIFO,       // First in, first out
-
-
 
 class CacheSectionLRU : public CacheSection
 {
@@ -81,11 +71,6 @@ class CacheSectionFIFO: public CacheSection
     using CacheSection::CacheSection; 
     bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
-
-
-
-
-
 
 
 #endif /* CacheSection_hpp */
