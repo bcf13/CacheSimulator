@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/main.cpp"
-            timestampString = "565040946.786043"
+            timestampString = "565081510.381286"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "25"
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/CacheSection.cpp"
-            timestampString = "565040946.786146"
+            timestampString = "565085484.755922"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "52"
@@ -58,7 +58,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/CacheSection.cpp"
-            timestampString = "565040946.786805"
+            timestampString = "565085484.756381"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "25"
@@ -74,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/CacheSection.cpp"
-            timestampString = "565040946.787339"
+            timestampString = "565085484.756734"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "72"
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/main.cpp"
-            timestampString = "565040946.787889"
+            timestampString = "565081510.3825901"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "41"
@@ -106,12 +106,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.787991"
+            timestampString = "565085484.757128"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "76"
             endingLineNumber = "76"
-            landmarkName = "ParseTraceFile(DineroMatrix&amp; dm)"
+            landmarkName = "ParseInt(std::string prompt, int lBound, int uBound)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -122,7 +122,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.788852"
+            timestampString = "565085484.757217"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "50"
@@ -138,7 +138,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.7896399"
+            timestampString = "565085484.7572809"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "123"
@@ -154,7 +154,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.790208"
+            timestampString = "565085484.757333"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "114"
@@ -170,12 +170,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.790833"
+            timestampString = "565085484.7573839"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "212"
             endingLineNumber = "212"
-            landmarkName = "ParseMode()"
+            landmarkName = "ParseAllocateOnWriteMiss()"
             landmarkType = "9">
             <Locations>
                <Location
@@ -218,7 +218,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.79144"
+            timestampString = "565085484.7574331"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "119"
@@ -234,7 +234,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.792106"
+            timestampString = "565085484.757481"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "142"
@@ -250,12 +250,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.792738"
+            timestampString = "565085484.757542"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "131"
             endingLineNumber = "131"
-            landmarkName = "ParseAndPopulateCache(CacheConfig&amp; cacheConfig)"
+            landmarkName = "ParseAndPopulateLevel(Level&amp; level)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -266,7 +266,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.79322"
+            timestampString = "565085484.7575901"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "249"
@@ -282,12 +282,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.7937239"
+            timestampString = "565085484.757641"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "133"
             endingLineNumber = "133"
-            landmarkName = "ParseAndPopulateCache(CacheConfig&amp; cacheConfig)"
+            landmarkName = "ParseAndPopulateLevel(Level&amp; level)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -298,13 +298,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.794188"
+            timestampString = "565085484.757705"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "33"
             endingLineNumber = "33"
-            landmarkName = "ParseArgs(CacheConfig&amp; cacheConfig, DineroMatrix&amp; dineroMatrix)"
-            landmarkType = "9">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -314,7 +314,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/CacheManager.cpp"
-            timestampString = "565040946.794636"
+            timestampString = "565085484.757916"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "45"
@@ -326,11 +326,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/main.cpp"
-            timestampString = "565040946.7948771"
+            timestampString = "565081510.383734"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "39"
@@ -346,11 +346,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/CacheManager.cpp"
-            timestampString = "565040946.794963"
+            timestampString = "565085484.758029"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
             landmarkName = "CacheManager::ProcessInstruction()"
             landmarkType = "7">
          </BreakpointContent>
@@ -362,7 +362,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/ParseArgs.cpp"
-            timestampString = "565040946.7950701"
+            timestampString = "565085484.75811"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "28"
@@ -378,7 +378,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/CacheSection.cpp"
-            timestampString = "565040946.795452"
+            timestampString = "565085484.7581739"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "103"
@@ -394,7 +394,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/CacheSection.cpp"
-            timestampString = "565040946.7959321"
+            timestampString = "565085484.758782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "77"
@@ -410,7 +410,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/CacheSection.cpp"
-            timestampString = "565040946.796398"
+            timestampString = "565085484.7591341"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "133"
@@ -427,7 +427,7 @@
             condition = "instructionIndex&gt;100"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/main.cpp"
-            timestampString = "565040946.796864"
+            timestampString = "565081510.385389"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "36"
@@ -443,7 +443,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Lab4_CacheSimulator/CacheSection.cpp"
-            timestampString = "565040946.796948"
+            timestampString = "565085484.759461"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "138"
@@ -481,6 +481,70 @@
             startingLineNumber = "67"
             endingLineNumber = "67"
             landmarkName = "RND_Evictor::Access(const uint32_t tag)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Lab4_CacheSimulator/CacheManager.cpp"
+            timestampString = "565085484.759798"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "CacheManager::ProcessInstruction()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Lab4_CacheSimulator/CacheManager.cpp"
+            timestampString = "565085484.760371"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "CacheManager::ProcessInstruction()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Lab4_CacheSimulator/CacheManager.cpp"
+            timestampString = "565085484.76048"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
+            landmarkName = "CacheManager::ProcessInstruction()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Lab4_CacheSimulator/CacheManager.cpp"
+            timestampString = "565085484.760564"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
+            landmarkName = "CacheManager::PrintStats()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -13,7 +13,7 @@
 
 #define DEFAULT_PARSE_INT -1
 #define DEBUG 1
-#define TEST_ID 2
+#define TEST_ID 3
 
 using namespace std;
 
@@ -33,8 +33,8 @@ void ParseArgs(CacheConfig& cacheConfig, DineroMatrix& dineroMatrix)
 
 void ParseTraceFile(DineroMatrix& dm)
 {
-    //string defaultFile = "Dinero10k.din";
-    string defaultFile = "DineroFull.din";
+    string defaultFile = "Dinero10k.din";
+    //string defaultFile = "DineroFull.din";
     
     cout<< endl << "Next, please enter a trace file, or 'd' for default: " << defaultFile <<  endl << endl;
     
@@ -303,6 +303,32 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
             cacheConfig.iDRAM_hitTime           = -1;
             cacheConfig.bAllocateOnWriteMiss    = true;
             cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::RND;
+            return;
+        }
+        case 3:
+        {
+            Level l = {
+                eMode::Split,
+                {
+                    {
+                        8,
+                        16,
+                        4096,
+                        -1
+                    },
+                    {
+                        4,
+                        32,
+                        8192,
+                        -1
+                    }
+                }
+                
+            };
+            cacheConfig.vLevels.push_back(l);
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = true;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
             return;
         }
     }

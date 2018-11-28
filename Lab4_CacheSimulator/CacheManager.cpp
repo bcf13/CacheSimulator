@@ -80,7 +80,6 @@ CacheManager::~CacheManager()
 // returns whether instruction was processed
 bool CacheManager::ProcessInstruction()
 {
-    
     if (mDineroInstructionIndex>mDineroMatrix.data.size()-1)
         return false;
     
@@ -96,7 +95,7 @@ bool CacheManager::ProcessInstruction()
     CacheSection*   section;
     CacheStats*     cacheStats;
     
-    if (mNumLevel1_Sections==1 || instructionID<2) // unified or read/write
+    if (mNumLevel1_Sections==1 || (instructionID<2)) // unified or read/write
     {
         section     = mvpCacheSections[0][0];
         cacheStats  = &mvpCacheStats[0][0];
@@ -140,30 +139,72 @@ void CacheManager::PrintStats()
     {
         for (auto section : level)
         {
-            cout<<section.ID<<" Statistics: "<<endl;
+            cout<<section.ID<<endl;
             cout<<endl;
             
-            cout<<"Total: "         << section.readTotal+section.writeTotal+section.instrFetchTotal<<endl;
-            cout<<"Total Misses: "  << section.readMisses+section.writeMisses+section.instrFetchMisses<<endl;
-            cout<<endl;
             
-            cout<<"Instrn: "        << section.instrFetchTotal<<endl;
-            cout<<"Instrn Misses: " << section.instrFetchMisses<<endl;
-            cout<<endl;
+            printf(    " Metrics                     Total         Instrn          Data          Read         Write          Misc\n");
+            printf(    " -------                     ------        ------          ----          ----         -----          ----\n");
             
-            cout<<"Data: "          << section.readTotal+section.writeTotal<<endl;
-            cout<<"Data Misses: "   << section.readMisses+section.writeMisses<<endl;
-            cout<<endl;
+            float Total                 = section.readTotal+section.writeTotal+section.instrFetchTotal;
+            float Total_Misses          = section.readMisses+section.writeMisses+section.instrFetchMisses;
             
-            cout<<"Read: "          << section.readTotal<<endl;
-            cout<<"Read Misses: "   << section.readMisses<<endl;
-            cout<<endl;
+            float Instrn                = section.instrFetchTotal;
+            float Instrn_Misses         = section.instrFetchMisses;
             
-            cout<<"Write: "         << section.writeTotal<<endl;
-            cout<<"Write Misses: "  << section.writeMisses<<endl;
-            cout<<endl;
+            float Data                  = section.readTotal+section.writeTotal;
+            float Data_Misses           = section.readMisses+section.writeMisses;
             
+            float Read                  = section.readTotal;
+            float Read_Misses           = section.readMisses;
+            
+            float Write                 = section.writeTotal;
+            float Write_Misses          = section.writeMisses;
+            
+            float Misc                  = 0.0;
+            float Misc_Misses           = 0.0;
+            
+            
+            //float f[6]={1.5,2,3,4,5,6.5};
+            
+            printf(    " Demand Fetches        %12.0f  %12.0f  %12.0f  %12.0f  %12.0f  %12.0f\n",
+                   Total,
+                   Instrn,
+                   Data,
+                   Read,
+                   Write,
+                   Misc
+                   );
+            
+            printf(    "    Fraction of total    %10.4f    %10.4f    %10.4f    %10.4f    %10.4f    %10.4f\n",
+                   Total / Total,
+                   Instrn / Total,
+                   Data / Total,
+                   Read / Total,
+                   Write / Total,
+                   Misc / Total
+                   );
+            
+            printf(    "  Demand Misses        %12.0f  %12.0f  %12.0f  %12.0f  %12.0f  %12.0f\n",
+                   Total_Misses,
+                   Instrn_Misses,
+                   Data_Misses,
+                   Read_Misses,
+                   Write_Misses,
+                   Misc_Misses
+                   );
+            
+            printf(    "     Demand miss rate    %10.4f    %10.4f    %10.4f    %10.4f    %10.4f    %10.4f\n",
+                   Total / Total_Misses,
+                   Instrn_Misses ? Instrn / Instrn_Misses : 0,
+                   Data_Misses ? Data / Data_Misses : 0,
+                   Read_Misses ? Read / Read_Misses : 0,
+                   Write_Misses ? Write / Write_Misses : 0,
+                   Misc_Misses ? Misc / Misc_Misses : 0
+                   );
+            
+            cout<<endl;
+            cout<<endl;
         }
     }
 }
-

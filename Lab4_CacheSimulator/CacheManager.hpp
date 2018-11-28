@@ -33,7 +33,7 @@ public:
     CacheManager(const CacheConfig& cacheConfig, const DineroMatrix& dineroMatrix);
     ~CacheManager();
     bool ProcessInstruction();
-    void PrintStats(); 
+    void PrintStats();
     
     
     
