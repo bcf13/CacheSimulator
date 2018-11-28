@@ -135,13 +135,17 @@ bool CacheManager::ProcessInstruction()
 
 void CacheManager::PrintStats()
 {
-    for (auto level : mvpCacheStats)
+    // Order is funky so that I cache is printed before D-cache to match Dinero formatting
+    for (auto l = mvpCacheStats.rbegin(); l != mvpCacheStats.rend(); ++l)
     {
-        for (auto section : level)
+        auto level = *l;
+        
+        for (auto s = level.rbegin(); s != level.rend(); ++s)
         {
+            auto section = *s; 
+            
             cout<<section.ID<<endl;
             cout<<endl;
-            
             
             printf(    " Metrics                     Total         Instrn          Data          Read         Write          Misc\n");
             printf(    " -------                     ------        ------          ----          ----         -----          ----\n");
@@ -163,7 +167,6 @@ void CacheManager::PrintStats()
             
             float Misc                  = 0.0;
             float Misc_Misses           = 0.0;
-            
             
             //float f[6]={1.5,2,3,4,5,6.5};
             

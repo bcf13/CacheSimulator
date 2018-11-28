@@ -14,13 +14,6 @@
 #include <unordered_map>
 #include <iostream>
 
-enum class eConfig
-{
-    D,          // Direct-Mapped
-    S,          // Set-Associative (S)
-    F           // Fully-Associative
-};
-
 enum class eMode
 {
     Unified,    // Data and Instruction cache shared

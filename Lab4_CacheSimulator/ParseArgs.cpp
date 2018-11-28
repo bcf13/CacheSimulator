@@ -310,13 +310,13 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
             Level l = {
                 eMode::Split,
                 {
-                    {
+                    {                   // D
                         8,
                         16,
                         4096,
                         -1
                     },
-                    {
+                    {                   // I
                         4,
                         32,
                         8192,
@@ -326,6 +326,99 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
                 
             };
             cacheConfig.vLevels.push_back(l);
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = true;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
+            return;
+        }
+        case 100: // OFFICIAL TA-DETERMINED TEST CASE #1
+        {
+            Level l = {
+                eMode::Unified,
+                {{       1,
+                    32,
+                    8192,
+                    -1
+                }}
+            };
+            cacheConfig.vLevels.push_back(l);
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = false;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
+            return;
+        }
+        case 200: // OFFICIAL TA-DETERMINED TEST CASE #2
+        {
+            Level l1 = {
+                eMode::Split,
+                {
+                    {                   // D
+                        2,
+                        32,
+                        8192,
+                        -1
+                    },
+                    {                   // I
+                        1,
+                        32,
+                        8192,
+                        -1
+                    }
+                }
+            };
+            Level l2 = {
+                eMode::Unified,
+                {{  8,
+                    32,
+                    32768,
+                    -1
+                }}
+            };
+            cacheConfig.vLevels.push_back(l1);
+            cacheConfig.vLevels.push_back(l2);
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = true;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::RND;
+            return;
+        }
+        case 300: // OFFICIAL TA-DETERMINED TEST CASE #3
+        {
+            Level l1 = {
+                eMode::Split,
+                {
+                    {               // D
+                        4,
+                        64,
+                        16384,
+                        -1
+                    },
+                    {               // I
+                        1,
+                        64,
+                        8192,
+                        -1
+                    }
+                }
+            };
+            Level l2 = {
+                eMode::Split,
+                {
+                    {               // D
+                        16,
+                        64,
+                        65536,
+                        -1
+                    },
+                    {               // I
+                        8,
+                        64,
+                        32768,
+                        -1
+                    }
+                }
+            };
+            cacheConfig.vLevels.push_back(l1);
+            cacheConfig.vLevels.push_back(l2);
             cacheConfig.iDRAM_hitTime           = -1;
             cacheConfig.bAllocateOnWriteMiss    = true;
             cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
