@@ -73,7 +73,7 @@ bool CacheSection::ProcessSet(PartitionedAddress partionedAddress, bool alloc)
     
     auto tag=partionedAddress.iTag;
     
-    if (mSection.iAssociativity>1)
+    //if (mSection.iAssociativity>1)
         return Replace(alloc,partionedAddress);
     
     bool found = false; 

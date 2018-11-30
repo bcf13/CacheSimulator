@@ -89,43 +89,40 @@ bool CacheManager::ProcessInstruction()
     auto address        =std::get<1>(instruction);
     //cout<<instructionID<<","<<address<<endl;
     
-    // Delegate to appropriate cache section
-
-    
-    CacheSection*   section;
-    CacheStats*     cacheStats;
+    CacheSection*   section_L1;
+    CacheStats*     cacheStats_L1;
     
     if (mNumLevel1_Sections==1 || (instructionID<2)) // unified or read/write
     {
-        section     = mvpCacheSections[0][0];
-        cacheStats  = &mvpCacheStats[0][0];
+        section_L1     = mvpCacheSections[0][0];
+        cacheStats_L1  = &mvpCacheStats[0][0];
     }
     else
     {
-        section = mvpCacheSections[0][1]; // I-Cache
-        cacheStats  = &mvpCacheStats[0][1];
+        section_L1 = mvpCacheSections[0][1]; // I-Cache
+        cacheStats_L1  = &mvpCacheStats[0][1];
     }
     
     bool alloc = !(instructionID==1 && !mbAllocateOnWriteMiss);
     
-    auto partitionedAddress = section->PartitionAddress(address);
+    auto partitionedAddress = section_L1->PartitionAddress(address);
     
-    auto hit = section->ProcessSet(partitionedAddress,alloc);
+    auto hit = section_L1->ProcessSet(partitionedAddress,alloc);
     
     switch (instructionID) {
         case 0:
-            cacheStats->readMisses += (hit ? 0 : 1);
-            cacheStats->readTotal++;
+            cacheStats_L1->readMisses += (hit ? 0 : 1);
+            cacheStats_L1->readTotal++;
             break;
             
         case 1:
-            cacheStats->writeMisses += (hit ? 0 : 1);
-            cacheStats->writeTotal++;
+            cacheStats_L1->writeMisses += (hit ? 0 : 1);
+            cacheStats_L1->writeTotal++;
             break;
             
         case 2:
-            cacheStats->instrFetchMisses += (hit ? 0 : 1);
-            cacheStats->instrFetchTotal++;
+            cacheStats_L1->instrFetchMisses += (hit ? 0 : 1);
+            cacheStats_L1->instrFetchTotal++;
             break;
     }
     
@@ -165,9 +162,7 @@ void CacheManager::PrintStats()
             
             float Misc                  = 0.0;
             float Misc_Misses           = 0.0;
-            
-            //float f[6]={1.5,2,3,4,5,6.5};
-            
+
             printf(    " Demand Fetches        %12.0f  %12.0f  %12.0f  %12.0f  %12.0f  %12.0f\n",
                    Total,
                    Instrn,
@@ -178,12 +173,12 @@ void CacheManager::PrintStats()
                    );
             
             printf(    "    Fraction of total    %10.4f    %10.4f    %10.4f    %10.4f    %10.4f    %10.4f\n",
-                   Total / Total,
-                   Instrn / Total,
-                   Data / Total,
-                   Read / Total,
-                   Write / Total,
-                   Misc / Total
+                   Total    / Total,
+                   Instrn   / Total,
+                   Data     / Total,
+                   Read     / Total,
+                   Write    / Total,
+                   Misc     / Total
                    );
             
             printf(    "  Demand Misses        %12.0f  %12.0f  %12.0f  %12.0f  %12.0f  %12.0f\n",
@@ -196,12 +191,12 @@ void CacheManager::PrintStats()
                    );
             
             printf(    "     Demand miss rate    %10.4f    %10.4f    %10.4f    %10.4f    %10.4f    %10.4f\n",
-                   Total / Total_Misses,
-                   Instrn_Misses ? Instrn / Instrn_Misses : 0,
-                   Data_Misses ? Data / Data_Misses : 0,
-                   Read_Misses ? Read / Read_Misses : 0,
-                   Write_Misses ? Write / Write_Misses : 0,
-                   Misc_Misses ? Misc / Misc_Misses : 0
+                   Total            ? Total_Misses      / Total     : 0,
+                   Instrn_Misses    ? Instrn_Misses     / Instrn    : 0,
+                   Data_Misses      ? Data_Misses       / Data      : 0,
+                   Read_Misses      ? Read_Misses       / Read      : 0,
+                   Write_Misses     ? Write_Misses      / Write     : 0,
+                   Misc_Misses      ? Misc_Misses       / Misc      : 0
                    );
             
             cout<<endl;
