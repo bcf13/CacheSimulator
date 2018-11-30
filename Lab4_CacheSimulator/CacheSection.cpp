@@ -96,17 +96,18 @@ bool CacheSection::ProcessSet(PartitionedAddress partionedAddress, bool alloc)
 CacheSectionLRU::CacheSectionLRU(const Section& section)
 : CacheSection(section)
 {
+    //cout<<"CacheSectionLRU ctor"<<endl;
     for (int i = 0; i < mNumSets; i++) {
         mvpSetEvictors.push_back(new LRU_Evictor(mSection.iAssociativity));
     }
     
-    cout<<"CacheSectionLRU ctor"<<endl;
+
 }
 
 CacheSectionRND::CacheSectionRND(const Section& section)
 : CacheSection(section)
 {
-    cout<<"CacheSectionRND ctor"<<endl;
+    //cout<<"CacheSectionRND ctor"<<endl;
     for (int i = 0; i < mNumSets; i++) {
         mvpSetEvictors.push_back(new RND_Evictor(mSection.iAssociativity));
     }
@@ -115,7 +116,7 @@ CacheSectionRND::CacheSectionRND(const Section& section)
 
 bool CacheSection::Replace(bool hit, PartitionedAddress partionedAddress)
 {
-    cout<<"CacheSection Replace"<<endl;
+    //cout<<"CacheSection Replace"<<endl;
     return true;
 }
 

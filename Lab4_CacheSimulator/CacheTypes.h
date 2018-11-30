@@ -57,9 +57,10 @@ typedef struct t_WayRange
 typedef struct t_CacheWay
 {
     bool        bValid;
+    bool        bDirty;
     uint32_t    iTag;
     t_CacheWay():
-        bValid(false),iTag(0){};
+        bValid(false),bDirty(false),iTag(0){};
 } CacheWay;
 
 typedef struct t_Section

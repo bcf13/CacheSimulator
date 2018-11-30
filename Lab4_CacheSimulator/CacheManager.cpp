@@ -135,11 +135,9 @@ bool CacheManager::ProcessInstruction()
 
 void CacheManager::PrintStats()
 {
-    // Order is funky so that I cache is printed before D-cache to match Dinero formatting
-    for (auto l = mvpCacheStats.rbegin(); l != mvpCacheStats.rend(); ++l)
+    for (auto level : mvpCacheStats)
     {
-        auto level = *l;
-        
+        // Reverse order to print I, then D cache
         for (auto s = level.rbegin(); s != level.rend(); ++s)
         {
             auto section = *s; 
