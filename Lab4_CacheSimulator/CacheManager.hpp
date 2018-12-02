@@ -34,6 +34,7 @@ public:
     ~CacheManager();
     bool ProcessInstruction();
     void PrintStats();
+    bool RegressionTest(int testID); 
     
     
     

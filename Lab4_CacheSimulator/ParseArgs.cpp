@@ -12,17 +12,15 @@
 #include <sstream>
 
 #define DEFAULT_PARSE_INT -1
-#define DEBUG 1
-#define TEST_ID 0
 
 using namespace std;
 
-void ParseArgs(CacheConfig& cacheConfig, DineroMatrix& dineroMatrix)
+void ParseArgs(CacheConfig& cacheConfig, DineroMatrix& dineroMatrix, bool debug, int test_id)
 {
     cout<<"Welcome to ECE 550 Group 3's Cache Simulator!" << endl;
     
-    if (DEBUG) // use pre-made test configuration
-        GetTestConfig(cacheConfig, TEST_ID);
+    if (debug) // use pre-made test configuration
+        GetTestConfig(cacheConfig, test_id);
     else
         ParseAndPopulateCache(cacheConfig);
     
@@ -134,7 +132,10 @@ void ParseAndPopulateLevel(Level& level)
     
     for (int i = 0; i < numSections; i++)
     {
-        cout<<"Configuring Section " << i+1 << "..." << endl;
+        std::string sectionString = "Configuring ";
+        sectionString += numSections==1 ? "Unified " : (i==0 ? "Data " : "Instruction ");
+        sectionString += "Cache...";
+        cout<<sectionString<<endl;
         Section section;
         ParseAndPopulateSection(section);
         level.vSections.push_back(section);
@@ -270,6 +271,22 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
             cacheConfig.vLevels.push_back(l);
             cacheConfig.iDRAM_hitTime           = -1;
             cacheConfig.bAllocateOnWriteMiss    = true;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
+            return;
+        }
+        case 10:
+        {
+            Level l = {
+                eMode::Unified,
+                {{       1,
+                    32,
+                    8192,
+                    -1
+                }}
+            };
+            cacheConfig.vLevels.push_back(l);
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = false;
             cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
             return;
         }

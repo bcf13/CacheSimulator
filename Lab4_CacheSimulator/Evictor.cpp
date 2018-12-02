@@ -20,7 +20,16 @@ RND_Evictor::RND_Evictor(size_t size)
 :   Evictor(size)
 {}
 
-bool LRU_Evictor::Access(const uint32_t tag)
+DM_Evictor::DM_Evictor(size_t size)
+:   Evictor(1),
+    mValid(false),
+    mTag(0),
+    mDirty(0)
+{}
+
+
+
+bool LRU_Evictor::Access(const uint32_t tag, eAllocatePolicy alloc)
 {
     bool found = false;
     // not present in cache
@@ -45,11 +54,11 @@ bool LRU_Evictor::Access(const uint32_t tag)
     // update reference
     dq.push_front(tag);
     ma[tag] = dq.begin();
-    
+
     return found;
 }
 
-bool RND_Evictor::Access(const uint32_t tag)
+bool RND_Evictor::Access(const uint32_t tag, eAllocatePolicy alloc)
 {
     bool found = false;
 
@@ -74,4 +83,51 @@ bool RND_Evictor::Access(const uint32_t tag)
     }
     
     return found;
+}
+
+bool DM_Evictor::Access(const uint32_t tag, eAllocatePolicy alloc)
+{
+// 1
+//    if (mValid && tag==mTag)
+//        return true;
+//
+//    mValid=true;
+//    mTag=tag;
+//    return false;
+    
+// 2
+    
+        if (mValid && (tag==mTag))
+            return true;
+    
+        if (alloc==eAllocatePolicy::Alloc)
+        {
+            mTag=tag;
+            mValid=true;
+        }
+    
+    return false;
+    
+    
+    
+    
+//    // 3
+//    if (mValid && (tag==mTag))
+//        return true;
+//
+//    if (!mValid)
+//    {
+//        mValid=true;
+//        mTag=tag;
+//        return false;
+//    }
+//
+//    // occupied ...
+//
+//    if (alloc==eAllocatePolicy::Alloc)
+//    {
+//        mTag=tag;
+//    }
+//
+//    return false;
 }

@@ -60,6 +60,13 @@ public:
     bool Replace(bool hit, PartitionedAddress partionedAddress);
 };
 
+class CacheSectionDM: public CacheSection
+{
+public:
+    CacheSectionDM(const Section& section);
+    bool Replace(bool hit, PartitionedAddress partionedAddress);
+};
+
 class CacheSectionNMRU: public CacheSection
 {
     using CacheSection::CacheSection;

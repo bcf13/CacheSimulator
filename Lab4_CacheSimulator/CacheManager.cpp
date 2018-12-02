@@ -28,7 +28,8 @@ CacheManager::CacheManager(const CacheConfig& cacheConfig, const DineroMatrix& d
     :mDineroInstructionIndex(0),
     mDineroMatrix(dineroMatrix),
     mReplacementAlgorithm(cacheConfig.replacementAlgorithm),
-    mDRAM_hitTime(cacheConfig.iDRAM_hitTime)
+    mDRAM_hitTime(cacheConfig.iDRAM_hitTime),
+    mbAllocateOnWriteMiss(cacheConfig.bAllocateOnWriteMiss)
 {
 
     mNumLevels          = cacheConfig.vLevels.size();
@@ -46,26 +47,29 @@ CacheManager::CacheManager(const CacheConfig& cacheConfig, const DineroMatrix& d
         int sectionIndex=0;
         for (auto section : level.vSections)
         {
-            
-            switch (cacheConfig.replacementAlgorithm) {
-                case eReplacementAlgorithm::LRU:
-                {
-                    mvpCacheSections[levelIndex].push_back(new CacheSectionLRU(section)); break;
-                }
-                case eReplacementAlgorithm::RND:
-                {
-                    mvpCacheSections[levelIndex].push_back(new CacheSectionRND(section)); break;
-                }
-                case eReplacementAlgorithm::NMRU:
-                {
-                    mvpCacheSections[levelIndex].push_back(new CacheSectionNMRU(section)); break;
-                }
-                case eReplacementAlgorithm::FIFO:
-                {
-                    mvpCacheSections[levelIndex].push_back(new CacheSectionFIFO(section)); break;
+            if (section.iAssociativity==1)
+                mvpCacheSections[levelIndex].push_back(new CacheSectionDM(section));
+            else
+            {
+                switch (cacheConfig.replacementAlgorithm) {
+                    case eReplacementAlgorithm::LRU:
+                    {
+                        mvpCacheSections[levelIndex].push_back(new CacheSectionLRU(section)); break;
+                    }
+                    case eReplacementAlgorithm::RND:
+                    {
+                        mvpCacheSections[levelIndex].push_back(new CacheSectionRND(section)); break;
+                    }
+                    case eReplacementAlgorithm::NMRU:
+                    {
+                        mvpCacheSections[levelIndex].push_back(new CacheSectionNMRU(section)); break;
+                    }
+                    case eReplacementAlgorithm::FIFO:
+                    {
+                        mvpCacheSections[levelIndex].push_back(new CacheSectionFIFO(section)); break;
+                    }
                 }
             }
-
             int sectionIndexInput = level.vSections.size()==1 ? -1 : sectionIndex; // handles unified case
             mvpCacheStats[levelIndex].emplace_back(GetSectionID(levelIndex,sectionIndexInput));
             sectionIndex++; 
@@ -107,7 +111,13 @@ bool CacheManager::ProcessInstruction()
     
     auto partitionedAddress = section_L1->PartitionAddress(address);
     
+    //cout<<instructionID<< ", set: "<<partitionedAddress.iSet<<" , tag: " << partitionedAddress.iTag <<endl;
+    
+    
     auto hit = section_L1->ProcessSet(partitionedAddress,alloc);
+    
+    //cout<< (hit ? "Hit" : "Miss") << endl;
+    cout<<endl;
     
     switch (instructionID) {
         case 0:
@@ -203,4 +213,52 @@ void CacheManager::PrintStats()
             cout<<endl;
         }
     }
+}
+
+bool CacheManager::RegressionTest(int testID)
+{
+    bool regressionTestSucceeded = true;
+    
+    switch (testID)
+    {
+            
+        case 0:
+        {
+            auto sectionStats               = mvpCacheStats[0][0];
+            float expected_demand_misses    = 491;
+            float empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+        }
+        case 10:
+        {
+            auto sectionStats               = mvpCacheStats[0][0];
+            float expected_demand_misses    = 1233;
+            float empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+        }
+        case 3:
+        {
+            auto  sectionStats              = mvpCacheStats[0][0];
+            float expected_demand_misses    = 387;
+            float empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            sectionStats              = mvpCacheStats[0][1];
+            expected_demand_misses    = 216;
+            empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+        }
+    }
+            
+            
+            
+    return regressionTestSucceeded;
 }

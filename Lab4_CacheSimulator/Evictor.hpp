@@ -14,6 +14,7 @@
 #include <list>
 #include <unordered_map>
 #include <set>
+#include "CacheTypes.h"
 
 class Evictor
 {
@@ -21,7 +22,7 @@ protected:
     size_t size;
 public:
     Evictor(size_t size);
-    virtual bool Access(uint32_t tag) = 0;
+    virtual bool Access(uint32_t tag, eAllocatePolicy alloc) = 0;
 };
 
 class LRU_Evictor : public Evictor
@@ -36,7 +37,7 @@ private:
 public:
     LRU_Evictor(size_t size);
 
-    bool Access(const uint32_t tag);
+    bool Access(const uint32_t tag, eAllocatePolicy alloc);
 };
 
 class RND_Evictor : public Evictor
@@ -46,7 +47,18 @@ private:
     
 public:
     RND_Evictor(size_t size);
-    bool Access(const uint32_t tag);
+    bool Access(const uint32_t tag, eAllocatePolicy alloc);
+};
+
+class DM_Evictor : public Evictor
+{
+private:
+    uint32_t    mTag;
+    bool        mValid;
+    bool        mDirty;
+public:
+    DM_Evictor(size_t size);
+    bool Access(const uint32_t tag, eAllocatePolicy alloc);
 };
 
 

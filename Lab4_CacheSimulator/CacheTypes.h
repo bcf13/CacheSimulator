@@ -14,6 +14,12 @@
 #include <unordered_map>
 #include <iostream>
 
+enum class eAllocatePolicy
+{
+    Alloc,
+    NoAlloc
+};
+
 enum class eMode
 {
     Unified,    // Data and Instruction cache shared
