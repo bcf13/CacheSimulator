@@ -12,7 +12,7 @@
 #include "CacheSection.hpp"
 #include <vector>
 
-#define INTERVAL 10
+#define INTERVAL 1
 
 #define DEBUG 1
 #define TEST_ID 2 // 0,2,3,10
@@ -22,7 +22,8 @@
 int main(int argc, const char * argv[]) {
     // insert code here...
     
-    std::vector<int> test_ids={4};
+     std::vector<int> test_ids={0,2,3,10,4,55};
+    //std::vector<int> test_ids={55};
     
     if (DEBUG)
         for (auto test_id : test_ids)
@@ -39,8 +40,9 @@ int main(int argc, const char * argv[]) {
             {
                 if ((instructionIndex+1) % INTERVAL ==0)
                 {
-                    std::cout<<instructionIndex<<std::endl;
-                    cacheManager.PrintStats();
+                    //std::cout<<instructionIndex<<std::endl;
+                    //if (instructionIndex>7500)
+                        //cacheManager.PrintStats();
                 }
                 
                 instructionIndex++;

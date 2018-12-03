@@ -71,12 +71,14 @@ typedef struct t_CacheWay
 
 typedef struct t_EvictIn
 {
-    bool        bAlloc;
-    bool        bSetDirty;
-    PartitionedAddress partitionedAddress;
-    t_EvictIn(bool bAlloc, bool bSetDirty, PartitionedAddress partitionedAddress)
+    bool                bAlloc;
+    bool                bSetDirty;
+    PartitionedAddress  partitionedAddress;
+    eInstructionID      eInstrID;
+    t_EvictIn(bool bAlloc, bool bSetDirty, eInstructionID eID, PartitionedAddress partitionedAddress)
     :   bAlloc(bAlloc),
         bSetDirty(bSetDirty),
+        eInstrID(eID),
         partitionedAddress(partitionedAddress){};
 } EvictIn;
 

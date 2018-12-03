@@ -105,6 +105,7 @@ bool CacheManager::ProcessInstruction()
     CacheSection*   section_L1  = mvpCacheSections[0][L1_sectionIndex];
     CacheStats* cacheStats_L1   = &mvpCacheStats[0][L1_sectionIndex];
     
+                                // not-write or allocate-on-write
     bool alloc                  = !(eInstrId==eInstructionID::Write && !mbAllocateOnWriteMiss);
     
     auto partitionedAddress_L1  = section_L1->PartitionAddress(address);
@@ -113,7 +114,7 @@ bool CacheManager::ProcessInstruction()
     
     bool alloc_L1               = alloc && mNumLevels==1; // we don't add to L1 on a miss if L2 exists
     
-    EvictIn evictIn_L1          = {alloc_L1, setDirty_L1, partitionedAddress_L1};
+    EvictIn evictIn_L1          = {alloc_L1, setDirty_L1, eInstrId, partitionedAddress_L1};
     
     auto evictOut_L1            = section_L1->ProcessSet(evictIn_L1);
     
@@ -123,6 +124,10 @@ bool CacheManager::ProcessInstruction()
         return true;
     
     //////////////////////////////// L2 : II ////////////////////////////////
+    
+    eInstructionID eInstrId_L2_II = eInstrId;
+    if (eInstrId==eInstructionID::Write && mbAllocateOnWriteMiss)
+        eInstrId_L2_II =eInstructionID::Read;
     
     auto L2_sectionIndex        = (mNumLevel2_Sections==1 || (eInstrId!=eInstructionID::InsFetch)) ? 0 : 1;
     CacheSection*   section_L2  = mvpCacheSections[1][L2_sectionIndex];
@@ -134,13 +139,14 @@ bool CacheManager::ProcessInstruction()
     
     bool setDirty_L2            = (eInstrId==eInstructionID::Write) && !alloc; // set L2 dirty if write and not allocating to L1 subsequently
     
-    EvictIn evictIn_L2          = {alloc_L2, setDirty_L2, partitionedAddress_L2}; // never write dirty to L2
+    // Question: does instructionID matter here?
+    EvictIn evictIn_L2          = {alloc_L2, setDirty_L2, eInstrId, partitionedAddress_L2}; // never write dirty to L2
     
     auto evictOut_L2            = section_L2->ProcessSet(evictIn_L2);
     
     auto L2_hit                 = evictOut_L2.bHit;
     
-    cacheStats_L2->WriteStat(L2_hit, eInstrId);
+    cacheStats_L2->WriteStat(L2_hit, eInstrId_L2_II);
     
     // If write, and alloc=false, we already set dirty, so we can move on
     if (setDirty_L2)
@@ -154,7 +160,7 @@ bool CacheManager::ProcessInstruction()
     
     auto setDirty_L1_III        = setDirty_L1; // same
     
-    EvictIn evictIn_L1_III      = {alloc_L1_III, setDirty_L1_III, partitionedAddress_L1};
+    EvictIn evictIn_L1_III      = {alloc_L1_III, setDirty_L1_III, eInstrId, partitionedAddress_L1};
     
     auto evictOut_L1_III        = section_L1->ProcessSet(evictIn_L1_III);
     
@@ -183,7 +189,7 @@ bool CacheManager::ProcessInstruction()
     
     bool setDirty_L2_IV             = (eInstrId==eInstructionID::Write) && !alloc;
 
-    EvictIn evictIn_L2_IV           = {alloc_L2_IV, setDirty_L2_IV, partitionedAddress_L2_IV}; // never write dirty to L2
+    EvictIn evictIn_L2_IV           = {alloc_L2_IV, setDirty_L2_IV, evictedL1_InstrID, partitionedAddress_L2_IV}; // never write dirty to L2
     
     auto evictOut_L2_IV             = section_L2_IV->ProcessSet(evictIn_L2_IV);
     
@@ -337,10 +343,60 @@ bool CacheManager::RegressionTest(int testID)
                 return false;
             
             sectionStats                    = mvpCacheStats[1][0];
-            expected_demand_misses          = 557;
+            expected_demand_misses          = 555;
             empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
             
             if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            break;
+        }
+            
+        case 55:
+        {
+            auto  sectionStats              = mvpCacheStats[0][1];
+            float expected_demand_misses    = 257;
+            float empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            sectionStats                    = mvpCacheStats[0][0];
+            expected_demand_misses          = 429;
+            empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            sectionStats                    = mvpCacheStats[1][1];
+            expected_demand_misses          = 129;
+            empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            sectionStats                    = mvpCacheStats[1][0];
+            expected_demand_misses          = 160;
+            empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            break;
+        }
+        case 100:
+        {
+            auto sectionStats                   = mvpCacheStats[0][0];
+            float expected_demand_misses        = 264414;
+            float empirical_demand_misses       = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            float expected_instruction_misses    = 18088;
+            float empirical_instruction_misses   = sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            if (expected_instruction_misses != empirical_instruction_misses)
                 return false;
             
             break;

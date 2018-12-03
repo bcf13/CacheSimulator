@@ -69,8 +69,8 @@ PartitionedAddress CacheSection::PartitionAddress(const int& address)
 uint32_t CacheSection::JoinAddress(const uint32_t& tag, const uint32_t& set)
 {
     uint32_t joinedAddress  = 0;
-    joinedAddress           &= set<<mOffset_numbits;
-    joinedAddress           &= tag<<(mOffset_numbits+mSet_numbits);
+    joinedAddress           |= set<<mOffset_numbits;
+    joinedAddress           |= tag<<(mOffset_numbits+mSet_numbits);
     
     return joinedAddress;
 }

@@ -108,7 +108,8 @@ EvictOut RND_Evictor::Access(const EvictIn evictIn)
 
 EvictOut DM_Evictor::Access(const EvictIn evictIn)
 {
-    auto tag_in = evictIn.partitionedAddress.iTag;
+    auto tag_in     = evictIn.partitionedAddress.iTag;
+    auto set        = evictIn.partitionedAddress.iSet;
     
     EvictOut evictOut;
     evictOut.bHit=false;
@@ -133,8 +134,14 @@ EvictOut DM_Evictor::Access(const EvictIn evictIn)
         evictOut.eInstrID           = mInstrID; 
         
         // Replace 
-        mTag=tag_in;
-        mValid=true;
+        mTag                        = tag_in;
+        mValid                      = true;
+        mInstrID                    = evictIn.eInstrID;
+        
+        if (evictIn.eInstrID==eInstructionID::Write && evictIn.bSetDirty)
+            mDirty=true;
+        else
+            mDirty= false; 
     }
     
     return evictOut;
