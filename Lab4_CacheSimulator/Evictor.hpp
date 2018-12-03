@@ -13,6 +13,7 @@
 #include <vector>
 #include <list>
 #include <unordered_map>
+#include <map>
 #include <set>
 #include "CacheTypes.h"
 
@@ -29,10 +30,12 @@ class LRU_Evictor : public Evictor
 {
 private:
     // store keys of cache
-    std::list<int> dq;
+    std::list<EvictItem> dq;
     
     // store references of key in cache
-    std::unordered_map<int, std::list<int>::iterator> ma;
+    std::unordered_map<EvictItem, std::list<EvictItem>::iterator,EvictItemHasher> ma;
+    
+    //std::map<EvictItem, std::list<EvictItem>::iterator> ma;
     
 public:
     LRU_Evictor(size_t size);

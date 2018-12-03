@@ -31,8 +31,8 @@ void ParseArgs(CacheConfig& cacheConfig, DineroMatrix& dineroMatrix, bool debug,
 
 void ParseTraceFile(DineroMatrix& dm, bool debug)
 {
-    string defaultFile = "Dinero10k.din";
-    //string defaultFile = "DineroFull.din";
+    //string defaultFile = "Dinero10k.din";
+    string defaultFile = "DineroFull.din";
     
     if (!debug)
         cout<< endl << "Next, please enter a trace file, or 'd' for default: " << defaultFile <<  endl << endl;
@@ -454,6 +454,83 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
                         -1
                     }
                 }
+            };
+            cacheConfig.vLevels.push_back(l1);
+            cacheConfig.vLevels.push_back(l2);
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = true;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
+            return;
+        }
+        case 555:
+        {
+            Level l1 = {
+                eMode::Split,
+                {
+                    {                   // D
+                        1,
+                        16,
+                        2048,
+                        -1
+                    },
+                    {                   // I
+                        1,
+                        32,
+                        4096,
+                        -1
+                    }
+                }
+            };
+            Level l2 = {
+                eMode::Split,
+                {
+                    {                   // D
+                        1,
+                        64,
+                        8192,
+                        -1
+                    },
+                    {                   // I
+                        1,
+                        64,
+                        8192,
+                        -1
+                    }
+                }
+            };
+            cacheConfig.vLevels.push_back(l1);
+            cacheConfig.vLevels.push_back(l2);
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = false;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
+            return;
+        }
+        case 201: // 200 with LRU
+        {
+            Level l1 = {
+                eMode::Split,
+                {
+                    {                   // D
+                        2,
+                        32,
+                        8192,
+                        -1
+                    },
+                    {                   // I
+                        1,
+                        32,
+                        8192,
+                        -1
+                    }
+                }
+            };
+            Level l2 = {
+                eMode::Unified,
+                {{  8,
+                    32,
+                    32768,
+                    -1
+                }}
             };
             cacheConfig.vLevels.push_back(l1);
             cacheConfig.vLevels.push_back(l2);

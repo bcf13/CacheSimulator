@@ -95,6 +95,29 @@ typedef struct t_EvictOut
 //        bHit(bHit),bFull(bFull),bCurrentlyDirty()iTag(iTag){};
 } EvictOut;
 
+
+typedef struct t_EvictItem
+{
+    uint32_t        mTag;
+    bool            mValid;
+    bool            mDirty;
+    eInstructionID  mInstrID;
+    bool operator==(const t_EvictItem &other) const
+    { return (mTag == other.mTag); }
+} EvictItem;
+
+struct EvictItemHasher
+{
+    std::size_t operator()(const EvictItem& e) const
+    {
+        using std::size_t;
+        using std::hash;
+        using std::string;
+        
+        return std::hash<uint32_t>()(e.mTag);
+    }
+};
+
 typedef struct t_Section
 {
     int         iAssociativity;

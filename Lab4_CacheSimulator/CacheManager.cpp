@@ -175,6 +175,9 @@ bool CacheManager::ProcessInstruction()
     
     auto evictedL1_InstrID          = evictOut_L1_III.eInstrID;
     
+    //if (evictOut_L1_III.bCurrentlyDirty)
+        //evictedL1_InstrID           = eInstructionID::Write; 
+    
     // Need to determine L2 section:
     auto L2_sectionIndex_IV         = (mNumLevel2_Sections==1 || (evictedL1_InstrID != eInstructionID::InsFetch)) ? 0 : 1;
     CacheSection*   section_L2_IV   = mvpCacheSections[1][L2_sectionIndex_IV];
@@ -377,6 +380,38 @@ bool CacheManager::RegressionTest(int testID)
             
             sectionStats                    = mvpCacheStats[1][0];
             expected_demand_misses          = 160;
+            empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            break;
+        }
+        case 555:
+        {
+            auto  sectionStats              = mvpCacheStats[0][1];
+            float expected_demand_misses    = 257;
+            float empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            sectionStats                    = mvpCacheStats[0][0];
+            expected_demand_misses          = 1000;
+            empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            sectionStats                    = mvpCacheStats[1][1];
+            expected_demand_misses          = 129;
+            empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            sectionStats                    = mvpCacheStats[1][0];
+            expected_demand_misses          = 924;
             empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
             
             if (expected_demand_misses != empirical_demand_misses)

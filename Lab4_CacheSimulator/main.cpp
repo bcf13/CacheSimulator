@@ -22,8 +22,8 @@
 int main(int argc, const char * argv[]) {
     // insert code here...
     
-     std::vector<int> test_ids={0,2,3,10,4,55};
-    //std::vector<int> test_ids={55};
+    //std::vector<int> test_ids={0,2,3,10,4,55,555, 201};
+    std::vector<int> test_ids={300};
     
     if (DEBUG)
         for (auto test_id : test_ids)
@@ -38,12 +38,12 @@ int main(int argc, const char * argv[]) {
             int instructionIndex = 0;
             while (cacheManager.ProcessInstruction())
             {
-                if ((instructionIndex+1) % INTERVAL ==0)
-                {
+//                if ((instructionIndex+1) % INTERVAL ==0)
+//                {
                     //std::cout<<instructionIndex<<std::endl;
-                    //if (instructionIndex>7500)
+                    //if (instructionIndex>2809)
                         //cacheManager.PrintStats();
-                }
+                //}
                 
                 instructionIndex++;
             }
