@@ -19,10 +19,10 @@
 class Evictor
 {
 protected:
-    size_t size;
+    size_t  size;
 public:
     Evictor(size_t size);
-    virtual bool Access(uint32_t tag, eAllocatePolicy alloc) = 0;
+    virtual EvictOut Access(const EvictIn evictIn) = 0;
 };
 
 class LRU_Evictor : public Evictor
@@ -37,7 +37,7 @@ private:
 public:
     LRU_Evictor(size_t size);
 
-    bool Access(const uint32_t tag, eAllocatePolicy alloc);
+    EvictOut Access(const EvictIn evictIn);
 };
 
 class RND_Evictor : public Evictor
@@ -47,18 +47,20 @@ private:
     
 public:
     RND_Evictor(size_t size);
-    bool Access(const uint32_t tag, eAllocatePolicy alloc);
+    EvictOut Access(const EvictIn evictIn);
 };
 
 class DM_Evictor : public Evictor
 {
 private:
-    uint32_t    mTag;
-    bool        mValid;
-    bool        mDirty;
+    uint32_t        mTag;
+    bool            mValid;
+    bool            mDirty;
+    eInstructionID  mInstrID;
+    
 public:
     DM_Evictor(size_t size);
-    bool Access(const uint32_t tag, eAllocatePolicy alloc);
+    EvictOut Access(const EvictIn evictIn);
 };
 
 

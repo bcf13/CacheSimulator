@@ -39,11 +39,10 @@ public:
     CacheSection();
     CacheSection(const Section& section);
     PartitionedAddress PartitionAddress(const int& address);
+    uint32_t JoinAddress(const uint32_t& tag, const uint32_t& set);
     WayRange Set2WayRange(int set);
     
-    bool ProcessSet(PartitionedAddress partionedAddress, bool alloc);
-    
-    virtual bool Replace(bool hit, PartitionedAddress partionedAddress);
+    EvictOut ProcessSet(EvictIn evictIn);
 };
 
 class CacheSectionLRU : public CacheSection

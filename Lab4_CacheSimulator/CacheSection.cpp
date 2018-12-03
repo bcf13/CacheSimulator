@@ -63,28 +63,27 @@ PartitionedAddress CacheSection::PartitionAddress(const int& address)
     uint32_t set    = (address & mSet_mask) >> mOffset_numbits;
     uint32_t offset = (address & mOffset_mask);
     
-    return { tag,set, offset};
+    return { tag, set, offset };
+}
+
+uint32_t CacheSection::JoinAddress(const uint32_t& tag, const uint32_t& set)
+{
+    uint32_t joinedAddress  = 0;
+    joinedAddress           &= set<<mOffset_numbits;
+    joinedAddress           &= tag<<(mOffset_numbits+mSet_numbits);
+    
+    return joinedAddress;
 }
 
 // Returns hit
-bool CacheSection::ProcessSet(PartitionedAddress partionedAddress, bool alloc)
+EvictOut CacheSection::ProcessSet(EvictIn evictIn)
 {
-    auto wayRange=Set2WayRange(partionedAddress.iSet);
+    auto pEvictor = mvpSetEvictors[evictIn.partitionedAddress.iSet];
     
-    auto tag=partionedAddress.iTag;
+    EvictOut evictOut = pEvictor->Access(evictIn);
     
-    auto set = partionedAddress.iSet;
+    return evictOut;
     
-    auto pEvictor = mvpSetEvictors[set];
-    
-    //auto tag = partionedAddress.iTag;
-    
-    eAllocatePolicy allocPolicy = alloc ? eAllocatePolicy::Alloc : eAllocatePolicy::NoAlloc;
-    
-    return pEvictor->Access(tag, allocPolicy);
-    
-
-    //return Replace(alloc,partionedAddress);
 }
 
 CacheSectionLRU::CacheSectionLRU(const Section& section)
@@ -112,66 +111,5 @@ CacheSectionDM::CacheSectionDM(const Section& section)
     for (int i = 0; i < mNumSets; i++) {
         mvpSetEvictors.push_back(new DM_Evictor(mSection.iAssociativity));
     }
-}
-
-bool CacheSection::Replace(bool hit, PartitionedAddress partionedAddress)
-{
-    //cout<<"CacheSection Replace"<<endl;
-    return true;
-}
-
-bool CacheSectionLRU::Replace(bool alloc, PartitionedAddress partionedAddress)
-{
-    //cout<<"CacheSectionLRU Replace"<<endl;
-    
-//    auto set = partionedAddress.iSet;
-//
-//    auto pEvictor = mvpSetEvictors[set];
-//    
-//    auto tag = partionedAddress.iTag;
-//    
-//    return pEvictor->Access(tag, alloc);
-    
-    return true;
-}
-
-bool CacheSectionRND::Replace(bool alloc, PartitionedAddress partionedAddress)
-{
-    //cout<<"CacheSectionRND Replace"<<endl;
-//    auto set = partionedAddress.iSet;
-//
-//    auto pEvictor = mvpSetEvictors[set];
-//
-//    auto tag = partionedAddress.iTag;
-//
-//    return pEvictor->Access(tag, alloc);
-    
-    return true;
-}
-
-bool CacheSectionDM::Replace(bool alloc, PartitionedAddress partionedAddress)
-{
-    //cout<<"CacheSectionDM Replace"<<endl;
-//    auto set = partionedAddress.iSet;
-//
-//    auto pEvictor = mvpSetEvictors[set];
-//
-//    auto tag = partionedAddress.iTag;
-//    
-//    return pEvictor->Access(tag, alloc);
-    
-    return true;
-}
-
-bool CacheSectionNMRU::Replace(bool hit, PartitionedAddress partionedAddress)
-{
-        cout<<"CacheSectionNMRU Replace"<<endl;
-        return true;
-}
-
-bool CacheSectionFIFO::Replace(bool hit, PartitionedAddress partionedAddress)
-{
-        cout<<"CacheSectionFIFO Replace"<<endl;
-        return true;
 }
 

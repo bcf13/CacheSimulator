@@ -69,6 +69,30 @@ typedef struct t_CacheWay
         bValid(false),bDirty(false),iTag(0){};
 } CacheWay;
 
+typedef struct t_EvictIn
+{
+    bool        bAlloc;
+    bool        bSetDirty;
+    PartitionedAddress partitionedAddress;
+    t_EvictIn(bool bAlloc, bool bSetDirty, PartitionedAddress partitionedAddress)
+    :   bAlloc(bAlloc),
+        bSetDirty(bSetDirty),
+        partitionedAddress(partitionedAddress){};
+} EvictIn;
+
+typedef struct t_EvictOut
+{
+    bool            bHit;
+    bool            bFull;
+    bool            bCurrentlyDirty;
+    uint32_t        iTag;
+    eInstructionID  eInstrID;
+//    t_EvictOut():
+//        bHit(false),bFull(false),iTag(0){};
+//    t_EvictOut(bool hit, bool Full, uint32_t iTag):
+//        bHit(bHit),bFull(bFull),bCurrentlyDirty()iTag(iTag){};
+} EvictOut;
+
 typedef struct t_Section
 {
     int         iAssociativity;
@@ -127,6 +151,26 @@ typedef struct t_CacheStats
         instrFetchMisses(0),  instrFetchTotal(0),
         ID(ID)
     {};
+    
+    void WriteStat(bool hit, eInstructionID eInstrID)
+    {
+        switch (eInstrID) {
+            case eInstructionID::Read:
+                readMisses += (hit ? 0 : 1);
+                readTotal++;
+                break;
+            
+            case eInstructionID::Write:
+                writeMisses += (hit ? 0 : 1);
+                writeTotal++;
+                break;
+            
+            case eInstructionID::InsFetch:
+                instrFetchMisses += (hit ? 0 : 1);
+                instrFetchTotal++;
+                break;
+        }
+    }
     
     t_CacheStats(){};
     

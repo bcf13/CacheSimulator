@@ -18,7 +18,9 @@ LRU_Evictor::LRU_Evictor(size_t size)
 
 RND_Evictor::RND_Evictor(size_t size)
 :   Evictor(size)
-{}
+{
+    std::srand(42); 
+}
 
 DM_Evictor::DM_Evictor(size_t size)
 :   Evictor(1),
@@ -27,13 +29,26 @@ DM_Evictor::DM_Evictor(size_t size)
     mDirty(0)
 {}
 
+// New functionality:
+// Inputs: write (set dirty = 0)
+// Outputs: tag
+// Internal: don't disrupt LRU unncessarily 
 
-
-bool LRU_Evictor::Access(const uint32_t tag, eAllocatePolicy alloc)
+EvictOut LRU_Evictor::Access(const EvictIn evictIn)
 {
-    bool found = false;
+//    // store keys of cache
+//    std::list<int> dq;
+//
+//    // store references of key in cache
+//    std::unordered_map<int, std::list<int>::iterator> ma;
+    
+    auto tag_in = evictIn.partitionedAddress.iTag;
+    
+    EvictOut evictOut;
+    evictOut.bHit=false;
+    
     // not present in cache
-    if (ma.find(tag) == ma.end())
+    if (ma.find(tag_in) == ma.end())
     {
         // cache is full
         if (dq.size() == size)
@@ -47,23 +62,29 @@ bool LRU_Evictor::Access(const uint32_t tag, eAllocatePolicy alloc)
     // present in cache
     else
     {
-        dq.erase(ma[tag]);
-        found = true;
+        dq.erase(ma[tag_in]);
+        evictOut.bHit=true;
     }
     
     // update reference
-    dq.push_front(tag);
-    ma[tag] = dq.begin();
+    dq.push_front(tag_in);
+    ma[tag_in] = dq.begin();
 
-    return found;
+    return evictOut;
 }
 
-bool RND_Evictor::Access(const uint32_t tag, eAllocatePolicy alloc)
+
+
+EvictOut RND_Evictor::Access(const EvictIn evictIn)
 {
-    bool found = false;
+    
+    auto tag_in = evictIn.partitionedAddress.iTag;
+    
+    EvictOut evictOut;
+    evictOut.bHit=false;
 
     // not present in cache
-    if (tagSet.find(tag) == tagSet.end())
+    if (tagSet.find(tag_in) == tagSet.end())
     {
         // cache is full
         if (tagSet.size() == size)
@@ -75,59 +96,46 @@ bool RND_Evictor::Access(const uint32_t tag, eAllocatePolicy alloc)
             tagSet.erase(it);
         }
         // add to cache
-        tagSet.insert(tag);
+        tagSet.insert(tag_in);
     }
     else // in cache
     {
-        found=true;
+        evictOut.bHit=true;
     }
     
-    return found;
+    return evictOut;
 }
 
-bool DM_Evictor::Access(const uint32_t tag, eAllocatePolicy alloc)
+EvictOut DM_Evictor::Access(const EvictIn evictIn)
 {
-// 1
-//    if (mValid && tag==mTag)
-//        return true;
-//
-//    mValid=true;
-//    mTag=tag;
-//    return false;
+    auto tag_in = evictIn.partitionedAddress.iTag;
     
-// 2
+    EvictOut evictOut;
+    evictOut.bHit=false;
     
-        if (mValid && (tag==mTag))
-            return true;
+    // Hit
+    if (mValid && (tag_in==mTag))
+    {
+        evictOut.bHit=true;
+        if (evictIn.bSetDirty)
+            mDirty=true; 
+        return evictOut;
+    }
+
+    // Miss
     
-        if (alloc==eAllocatePolicy::Alloc)
-        {
-            mTag=tag;
-            mValid=true;
-        }
+    //  If allocate, add to cache
+    if (evictIn.bAlloc)
+    {
+        evictOut.iTag               = mTag;
+        evictOut.bCurrentlyDirty    = mDirty;
+        evictOut.bFull              = mValid;
+        evictOut.eInstrID           = mInstrID; 
+        
+        // Replace 
+        mTag=tag_in;
+        mValid=true;
+    }
     
-    return false;
-    
-    
-    
-    
-//    // 3
-//    if (mValid && (tag==mTag))
-//        return true;
-//
-//    if (!mValid)
-//    {
-//        mValid=true;
-//        mTag=tag;
-//        return false;
-//    }
-//
-//    // occupied ...
-//
-//    if (alloc==eAllocatePolicy::Alloc)
-//    {
-//        mTag=tag;
-//    }
-//
-//    return false;
+    return evictOut;
 }

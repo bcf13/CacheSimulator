@@ -10,44 +10,52 @@
 #include "ParseArgs.hpp"
 #include "CacheManager.hpp"
 #include "CacheSection.hpp"
+#include <vector>
 
-#define INTERVAL 100000
+#define INTERVAL 10
 
-#define DEBUG 0
-#define TEST_ID 3
+#define DEBUG 1
+#define TEST_ID 2 // 0,2,3,10
 #define REGRESSION 1
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
     
-    CacheConfig cacheConfig;
-    DineroMatrix dineroMatrix;
-
-    ParseArgs(cacheConfig,dineroMatrix,DEBUG,TEST_ID);
+    std::vector<int> test_ids={4};
     
-    CacheManager cacheManager(cacheConfig,dineroMatrix);
-    
-    int instructionIndex = 0;
-    while (cacheManager.ProcessInstruction())
-    {
-        if ((instructionIndex+1) % INTERVAL ==0)
+    if (DEBUG)
+        for (auto test_id : test_ids)
         {
-            std::cout<<instructionIndex<<std::endl;
+            CacheConfig cacheConfig;
+            DineroMatrix dineroMatrix;
+
+            ParseArgs(cacheConfig,dineroMatrix,DEBUG,test_id);
+            
+            CacheManager cacheManager(cacheConfig,dineroMatrix);
+            
+            int instructionIndex = 0;
+            while (cacheManager.ProcessInstruction())
+            {
+                if ((instructionIndex+1) % INTERVAL ==0)
+                {
+                    std::cout<<instructionIndex<<std::endl;
+                    cacheManager.PrintStats();
+                }
+                
+                instructionIndex++;
+            }
+            
             cacheManager.PrintStats();
+            
+            if (REGRESSION && DEBUG)
+            {
+                bool regressionResult=cacheManager.RegressionTest(test_id);
+                
+                std::cout<< "Regression Test # " << test_id << (regressionResult ? " PASSED" : " FAILED") << std::endl;
+            }
+            
         }
-        
-        instructionIndex++;
-    }
-    
-    cacheManager.PrintStats(); 
-    
-    if (REGRESSION && DEBUG)
-    {
-        bool regressionResult=cacheManager.RegressionTest(TEST_ID);
-        
-        std::cout<< "Regression Test # " << TEST_ID << (regressionResult ? " PASSED" : "FAILED") << std::endl;
-    }
     
     return 0;
 }

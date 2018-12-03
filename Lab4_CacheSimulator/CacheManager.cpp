@@ -87,56 +87,110 @@ bool CacheManager::ProcessInstruction()
     if (mDineroInstructionIndex>mDineroMatrix.data.size()-1)
         return false;
     
-    std::pair<int,int> instruction = mDineroMatrix.data[mDineroInstructionIndex];
+    std::pair<int,int> instruction = mDineroMatrix.data[mDineroInstructionIndex++];
     
-    auto instructionID  =std::get<0>(instruction);
-    auto address        =std::get<1>(instruction);
-    //cout<<instructionID<<","<<address<<endl;
+    auto instrID          =std::get<0>(instruction);
+    auto address                =std::get<1>(instruction);
     
-    CacheSection*   section_L1;
-    CacheStats*     cacheStats_L1;
+    eInstructionID eInstrId;
+    if (instrID==0)
+        eInstrId =eInstructionID::Read;
+    else if (instrID==1)
+        eInstrId =eInstructionID::Write;
+    else eInstrId =eInstructionID::InsFetch;
     
-    if (mNumLevel1_Sections==1 || (instructionID<2)) // unified or read/write
-    {
-        section_L1     = mvpCacheSections[0][0];
-        cacheStats_L1  = &mvpCacheStats[0][0];
-    }
-    else
-    {
-        section_L1 = mvpCacheSections[0][1]; // I-Cache
-        cacheStats_L1  = &mvpCacheStats[0][1];
-    }
+    //////////////////////////////// L1 : I ////////////////////////////////
     
-    bool alloc = !(instructionID==1 && !mbAllocateOnWriteMiss);
+    auto L1_sectionIndex        = (mNumLevel1_Sections==1 || (eInstrId != eInstructionID::InsFetch)) ? 0 : 1;
+    CacheSection*   section_L1  = mvpCacheSections[0][L1_sectionIndex];
+    CacheStats* cacheStats_L1   = &mvpCacheStats[0][L1_sectionIndex];
     
-    auto partitionedAddress = section_L1->PartitionAddress(address);
+    bool alloc                  = !(eInstrId==eInstructionID::Write && !mbAllocateOnWriteMiss);
     
-    //cout<<instructionID<< ", set: "<<partitionedAddress.iSet<<" , tag: " << partitionedAddress.iTag <<endl;
+    auto partitionedAddress_L1  = section_L1->PartitionAddress(address);
+
+    bool setDirty_L1            = eInstrId==eInstructionID::Write;
+    
+    bool alloc_L1               = alloc && mNumLevels==1; // we don't add to L1 on a miss if L2 exists
+    
+    EvictIn evictIn_L1          = {alloc_L1, setDirty_L1, partitionedAddress_L1};
+    
+    auto evictOut_L1            = section_L1->ProcessSet(evictIn_L1);
+    
+    cacheStats_L1->WriteStat(evictOut_L1.bHit, eInstrId);
+    
+    if (evictOut_L1.bHit || mNumLevels==1)
+        return true;
+    
+    //////////////////////////////// L2 : II ////////////////////////////////
+    
+    auto L2_sectionIndex        = (mNumLevel2_Sections==1 || (eInstrId!=eInstructionID::InsFetch)) ? 0 : 1;
+    CacheSection*   section_L2  = mvpCacheSections[1][L2_sectionIndex];
+    CacheStats* cacheStats_L2   = &mvpCacheStats[1][L2_sectionIndex];
+    
+    auto partitionedAddress_L2  = section_L2->PartitionAddress(address);
+    
+    bool alloc_L2               = alloc; // not dependent on level
+    
+    bool setDirty_L2            = (eInstrId==eInstructionID::Write) && !alloc; // set L2 dirty if write and not allocating to L1 subsequently
+    
+    EvictIn evictIn_L2          = {alloc_L2, setDirty_L2, partitionedAddress_L2}; // never write dirty to L2
+    
+    auto evictOut_L2            = section_L2->ProcessSet(evictIn_L2);
+    
+    auto L2_hit                 = evictOut_L2.bHit;
+    
+    cacheStats_L2->WriteStat(L2_hit, eInstrId);
+    
+    // If write, and alloc=false, we already set dirty, so we can move on
+    if (setDirty_L2)
+        return true;
+    
+    //////////////////////////////// L1 : III ////////////////////////////////
+    
+    // we have the value from L2, need to add to L1
+    
+    bool alloc_L1_III           = alloc;
+    
+    auto setDirty_L1_III        = setDirty_L1; // same
+    
+    EvictIn evictIn_L1_III      = {alloc_L1_III, setDirty_L1_III, partitionedAddress_L1};
+    
+    auto evictOut_L1_III        = section_L1->ProcessSet(evictIn_L1_III);
     
     
-    auto hit = section_L1->ProcessSet(partitionedAddress,alloc);
+    // cacheStats_L1->WriteStat(evictOut_L1.bHit, instructionID); don't update stats here?
     
-    //cout<< (hit ? "Hit" : "Miss") << endl;
-    cout<<endl;
+    // If it wasn't full, or wasn't dirty, we're done
+    if (!evictOut_L1_III.bFull || !evictOut_L1_III.bCurrentlyDirty)
+        return true;
+
+    //////////////////////////////// L2 : IV ////////////////////////////////
     
-    switch (instructionID) {
-        case 0:
-            cacheStats_L1->readMisses += (hit ? 0 : 1);
-            cacheStats_L1->readTotal++;
-            break;
-            
-        case 1:
-            cacheStats_L1->writeMisses += (hit ? 0 : 1);
-            cacheStats_L1->writeTotal++;
-            break;
-            
-        case 2:
-            cacheStats_L1->instrFetchMisses += (hit ? 0 : 1);
-            cacheStats_L1->instrFetchTotal++;
-            break;
-    }
+    auto evictedL1_InstrID          = evictOut_L1_III.eInstrID;
     
-    mDineroInstructionIndex++;
+    // Need to determine L2 section:
+    auto L2_sectionIndex_IV         = (mNumLevel2_Sections==1 || (evictedL1_InstrID != eInstructionID::InsFetch)) ? 0 : 1;
+    CacheSection*   section_L2_IV   = mvpCacheSections[1][L2_sectionIndex_IV];
+    CacheStats* cacheStats_L2_IV    = &mvpCacheStats[1][L2_sectionIndex_IV];
+    
+
+    // Need to translate L1 address into L2 address (we already know the set)
+    auto translated_L1_address      = section_L1->JoinAddress(evictOut_L1_III.iTag, partitionedAddress_L1.iSet);
+    auto partitionedAddress_L2_IV   = section_L2_IV->PartitionAddress(translated_L1_address);
+    
+    bool alloc_L2_IV                = alloc; // not dependent on level
+    
+    bool setDirty_L2_IV             = (eInstrId==eInstructionID::Write) && !alloc;
+
+    EvictIn evictIn_L2_IV           = {alloc_L2_IV, setDirty_L2_IV, partitionedAddress_L2_IV}; // never write dirty to L2
+    
+    auto evictOut_L2_IV             = section_L2_IV->ProcessSet(evictIn_L2_IV);
+    
+    auto L2_hit_IV                  = evictOut_L2_IV.bHit;
+    
+    cacheStats_L2_IV->WriteStat(L2_hit_IV, evictedL1_InstrID);
+    
     return true;
 }
 
@@ -230,6 +284,19 @@ bool CacheManager::RegressionTest(int testID)
             
             if (expected_demand_misses != empirical_demand_misses)
                 return false;
+            
+            break;
+        }
+        case 2:
+        {
+            auto sectionStats               = mvpCacheStats[0][0];
+            float expected_demand_misses    = 920;
+            float empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            break;
         }
         case 10:
         {
@@ -239,6 +306,8 @@ bool CacheManager::RegressionTest(int testID)
             
             if (expected_demand_misses != empirical_demand_misses)
                 return false;
+            
+            break;
         }
         case 3:
         {
@@ -249,12 +318,32 @@ bool CacheManager::RegressionTest(int testID)
             if (expected_demand_misses != empirical_demand_misses)
                 return false;
             
-            sectionStats              = mvpCacheStats[0][1];
-            expected_demand_misses    = 216;
-            empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            sectionStats                    = mvpCacheStats[0][1];
+            expected_demand_misses          = 216;
+            empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
             
             if (expected_demand_misses != empirical_demand_misses)
                 return false;
+            
+            break;
+        }
+        case 4:
+        {
+            auto  sectionStats              = mvpCacheStats[0][0];
+            float expected_demand_misses    = 1293;
+            float empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            sectionStats                    = mvpCacheStats[1][0];
+            expected_demand_misses          = 557;
+            empirical_demand_misses         = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
+            
+            if (expected_demand_misses != empirical_demand_misses)
+                return false;
+            
+            break;
         }
     }
             

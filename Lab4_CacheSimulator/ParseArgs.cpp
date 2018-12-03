@@ -24,24 +24,27 @@ void ParseArgs(CacheConfig& cacheConfig, DineroMatrix& dineroMatrix, bool debug,
     else
         ParseAndPopulateCache(cacheConfig);
     
-    ParseTraceFile(dineroMatrix);
+    ParseTraceFile(dineroMatrix, debug);
     
     cout<<"ParseArgs completed"<<endl;
 }
 
-void ParseTraceFile(DineroMatrix& dm)
+void ParseTraceFile(DineroMatrix& dm, bool debug)
 {
     string defaultFile = "Dinero10k.din";
     //string defaultFile = "DineroFull.din";
     
-    cout<< endl << "Next, please enter a trace file, or 'd' for default: " << defaultFile <<  endl << endl;
+    if (!debug)
+        cout<< endl << "Next, please enter a trace file, or 'd' for default: " << defaultFile <<  endl << endl;
     
     while (true)
     {
-        std::string fileName;
-        cin>>fileName;
         
-        if (fileName=="d" || fileName=="D")
+        std::string fileName;
+        if (!debug)
+            cin>>fileName;
+        
+        if (fileName=="d" || fileName=="D" || debug)
             fileName=defaultFile;
 
         std::ifstream infile(fileName);
@@ -343,6 +346,31 @@ void GetTestConfig(CacheConfig& cacheConfig, int testID)
                 
             };
             cacheConfig.vLevels.push_back(l);
+            cacheConfig.iDRAM_hitTime           = -1;
+            cacheConfig.bAllocateOnWriteMiss    = true;
+            cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;
+            return;
+        }
+        case 4:
+        {
+            Level l1 = {
+                eMode::Unified,
+                {{  1,
+                    16,
+                    2048,
+                    -1
+                }}
+            };
+            Level l2 = {
+                eMode::Unified,
+                {{  1,
+                    32,
+                    8192,
+                    -1
+                }}
+            };
+            cacheConfig.vLevels.push_back(l1);
+            cacheConfig.vLevels.push_back(l2);
             cacheConfig.iDRAM_hitTime           = -1;
             cacheConfig.bAllocateOnWriteMiss    = true;
             cacheConfig.replacementAlgorithm    = eReplacementAlgorithm::LRU;

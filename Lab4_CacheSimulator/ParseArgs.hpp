@@ -17,7 +17,7 @@
 
 eMode       ParseMode();
 void        ParseArgs(CacheConfig& cacheConfig, DineroMatrix& dineroMatrix, bool debug, int test_id); 
-void        ParseTraceFile(DineroMatrix& dm);
+void        ParseTraceFile(DineroMatrix& dm, bool debug);
 int         ParseInt(std::string prompt, int lBound, int uBound);
 void        ParseAndPopulateCache(CacheConfig& cacheConfig);
 void        ParseAndPopulateLevel(Level& level);
