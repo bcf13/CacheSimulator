@@ -100,7 +100,7 @@ typedef struct t_EvictItem
 {
     uint32_t        mTag;
     bool            mValid;
-    bool            mDirty;
+    mutable bool    mDirty;
     eInstructionID  mInstrID;
     bool operator==(const t_EvictItem &other) const
     { return (mTag == other.mTag); }

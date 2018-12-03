@@ -13,8 +13,9 @@
 #include <vector>
 #include <list>
 #include <unordered_map>
-#include <map>
-#include <set>
+#include <unordered_set>
+//#include <map>
+//#include <set>
 #include "CacheTypes.h"
 
 class Evictor
@@ -46,7 +47,7 @@ public:
 class RND_Evictor : public Evictor
 {
 private:
-    std::set<uint32_t> tagSet;
+    std::unordered_set<EvictItem,EvictItemHasher> tagSet;
     
 public:
     RND_Evictor(size_t size);

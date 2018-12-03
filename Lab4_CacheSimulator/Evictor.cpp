@@ -53,11 +53,7 @@ EvictOut LRU_Evictor::Access(const EvictIn evictIn)
     if (inCache)
     {
         evictOut.bHit=true;
-//        if (evictIn.bSetDirty)
-//            (*ma[evictItem]).mDirty=true;
-        
-        // Update LRU
-        
+
         bool wasDirty = ma[evictItem]->mDirty;
         bool wasWrite = ma[evictItem]->mInstrID==eInstructionID::Write;
         
@@ -114,7 +110,6 @@ EvictOut LRU_Evictor::Access(const EvictIn evictIn)
         newLocation->mDirty= false;
     
 
-
     return evictOut;
 }
 
@@ -123,30 +118,65 @@ EvictOut LRU_Evictor::Access(const EvictIn evictIn)
 EvictOut RND_Evictor::Access(const EvictIn evictIn)
 {
     
-    auto tag_in = evictIn.partitionedAddress.iTag;
+    auto tag_in         = evictIn.partitionedAddress.iTag;
+    
+    EvictItem evictItem;
+    evictItem.mTag      = tag_in;
+    evictItem.mInstrID  = evictIn.eInstrID;
     
     EvictOut evictOut;
-    evictOut.bHit=false;
+    evictOut.bHit       = false;
 
-    // not present in cache
-    if (tagSet.find(tag_in) == tagSet.end())
-    {
-        // cache is full
-        if (tagSet.size() == size)
-        {
-            // remove random value
-            int offset = std::rand()%size;
-            auto it = tagSet.begin(); 
-            std::advance(it,offset);
-            tagSet.erase(it);
-        }
-        // add to cache
-        tagSet.insert(tag_in);
-    }
-    else // in cache
+    auto findTag        = tagSet.find(evictItem);
+    auto inCache        = findTag != tagSet.end();
+    
+    // Hit
+    if (inCache)
     {
         evictOut.bHit=true;
+        
+        if (evictIn.bSetDirty)
+            findTag->mDirty=true;
+        
+        return evictOut;
     }
+    
+    // Miss
+    
+    if (!evictIn.bAlloc)
+        return evictOut;
+    
+    // cache is full
+    if (tagSet.size() == size)
+    {
+        // remove random value
+        int offset = std::rand()%size;
+        auto it = tagSet.begin();
+        std::advance(it,offset);
+        auto removed = *it;
+ 
+        evictOut.iTag               = removed.mTag;
+        evictOut.bCurrentlyDirty    = removed.mDirty;
+        evictOut.bFull              = true;
+        evictOut.eInstrID           = removed.mInstrID;
+        
+        // remove
+        tagSet.erase(it);
+    }
+    
+    // finish populating evictItem
+    evictItem.mTag                  = tag_in;
+    evictItem.mValid               = true;
+    evictItem.mInstrID             = evictIn.eInstrID;
+    
+    if (evictIn.eInstrID==eInstructionID::Write && evictIn.bSetDirty)
+        evictItem.mDirty=true;
+    else
+        evictItem.mDirty= false;
+    
+    // add
+    tagSet.insert(evictItem);
+    
     
     return evictOut;
 }

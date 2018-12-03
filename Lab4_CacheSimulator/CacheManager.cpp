@@ -176,7 +176,7 @@ bool CacheManager::ProcessInstruction()
     auto evictedL1_InstrID          = evictOut_L1_III.eInstrID;
     
     //if (evictOut_L1_III.bCurrentlyDirty)
-        //evictedL1_InstrID           = eInstructionID::Write; 
+        //evictedL1_InstrID           = eInstructionID::Write;
     
     // Need to determine L2 section:
     auto L2_sectionIndex_IV         = (mNumLevel2_Sections==1 || (evictedL1_InstrID != eInstructionID::InsFetch)) ? 0 : 1;
@@ -299,7 +299,7 @@ bool CacheManager::RegressionTest(int testID)
         case 2:
         {
             auto sectionStats               = mvpCacheStats[0][0];
-            float expected_demand_misses    = 920;
+            float expected_demand_misses    = 932;
             float empirical_demand_misses   = sectionStats.readMisses+sectionStats.writeMisses+sectionStats.instrFetchMisses;
             
             if (expected_demand_misses != empirical_demand_misses)
